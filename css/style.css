@@ -1,0 +1,128 @@
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: .2em;
+  line-height: 1.5em;
+  box-sizing: border-box;
+}
+
+/* Table of Contents, if wanted
+
+Add to yaml:
+
+output:
+  blogdown::html_page:
+    toc: true
+
+    */
+
+#TableOfContents, #TOC {
+  border: 1px solid #eee;
+  border-radius: 5px;
+}
+
+/* Header and Footer */
+.menu li { display: inline-block; }
+.article-meta, .menu a {
+  text-decoration: none;
+  background: #D2D6EF;
+  color: #FFF;
+  padding: 0.2em 0.5em;
+  border-radius: 5px;
+}
+
+.terms { font-size: .9em; }
+.menu, .article-meta, footer { text-align: center; }
+.title { font-size: 1.1em; }
+footer a { text-decoration: none; }
+
+.pull-left {
+  float: left;
+  padding: 0 0.5em 0 0;
+}
+.pull-right {
+  float: right;
+  padding: 0 0 0 0.5em;
+}
+
+a {
+  color: #613DC1;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Adjust background at your leisure! */
+header {
+  position: relative;
+  width: 100%;
+  height: 2rem;
+  font-family: "Fira Mono", monospace;
+  
+  font-size: 1rem;
+  background: #613DC1;
+  border-bottom: 1px solid #000;
+  box-sizing: border-box;
+}
+
+header ul,
+header ol {
+  margin: 0;
+  padding: 0.1rem 0 0 0;
+  list-style: none
+}
+header nav {
+  padding: 0 0.5rem
+}
+
+header a {
+  color: #fff;
+  line-height: 1.75rem;
+}
+header a:hover,
+header .current a {
+    color: #fff
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+.content {
+  font-family: "Fira Mono", monospace;
+  padding: 0.5em;
+}
+
+/* Code Boxes */
+pre {
+  border: 1px solid #ddd;
+  box-shadow: 5px 5px 5px #eee;
+  background: #f8f8f8;
+  padding: 1em;
+  overflow-x: auto;
+}
+code { background: #f9f9f9; }
+pre code { background: none; }
+
+/* Images, tables, misc. */
+img, iframe, video { max-width: 100%; }
+main {
+  hyphens: auto;
+}
+blockquote {
+  background: #f9f9f9;
+  border-left: 5px solid #ccc;
+  padding: 3px 1em 3px;
+}
+
+table {
+  margin: auto;
+  border-top: 1px solid #666;
+  border-bottom: 1px solid #666;
+}
+table thead th { border-bottom: 1px solid #ddd; }
+th, td { padding: 5px; }
+tr:nth-child(even) { background: #eee }
