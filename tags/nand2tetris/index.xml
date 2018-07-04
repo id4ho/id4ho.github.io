@@ -12,6 +12,16 @@
     
     
     <item>
+      <title>Multiplexing and Demultiplexing</title>
+      <link>/posts/2018-06-11-mux-and-demux/</link>
+      <pubDate>Mon, 11 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/2018-06-11-mux-and-demux/</guid>
+      <description>Multiplexing Multiplexing is a technique whereby multiple signals can be sent across the same shared medium. The relevant elementary logic gate is called a MUX. First, here is the logic table:
+   a b select out     0 0 0 0   0 1 0 0   1 0 0 1   1 1 0 1   0 0 1 0   0 1 1 1   1 0 1 0   1 1 1 1    MUX is short for multiplexer.</description>
+    </item>
+    
+    <item>
       <title>The Universal Gate - Week 1</title>
       <link>/posts/2018-06-11-the-universal-gate/</link>
       <pubDate>Mon, 11 Jun 2018 00:00:00 +0000</pubDate>
