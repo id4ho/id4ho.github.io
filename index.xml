@@ -6,23 +6,27 @@
     <description>Recent content in Posts on jackvnimble</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 14 Mar 2014 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 11 Jun 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Markdown Guide</title>
-      <link>/posts/2016-02-14-markdown-guide/</link>
-      <pubDate>Fri, 14 Mar 2014 00:00:00 +0000</pubDate>
+      <title>The Universal Gate - Week 1</title>
+      <link>/posts/2018-06-11-the-universal-gate/</link>
+      <pubDate>Mon, 11 Jun 2018 00:00:00 +0000</pubDate>
       
-      <guid>/posts/2016-02-14-markdown-guide/</guid>
-      <description>An h1 header Paragraphs are separated by a blank line.
-2nd paragraph. Italic, bold, and monospace. Itemized lists look like:
- this one that one the other one  Note that &amp;mdash; not considering the asterisk &amp;mdash; the actual text content starts at 4-columns in.
- Block quotes are written like so.
-They can span multiple paragraphs, if you like.
- Use 3 dashes for an em-dash. Use 2 dashes for ranges (ex.</description>
+      <guid>/posts/2018-06-11-the-universal-gate/</guid>
+      <description>NAND - The Universal Gate This week we built a lot of logic gates or &amp;ldquo;chips&amp;rdquo; all using a single primitive: the humble NAND gate. NAND gates can be composed to build all other elementary logic gates and from those you can construct an ALU (arithmetic logic unit) and memory etc. This is why it&amp;rsquo;s called the Universal Gate and why the course title is Nand to Tetris1. AND/OR cannot be used as a primitive since they cannot invert.</description>
+    </item>
+    
+    <item>
+      <title>NAND to Tetris</title>
+      <link>/posts/2018-06-04-nand-to-tetris/</link>
+      <pubDate>Mon, 04 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/2018-06-04-nand-to-tetris/</guid>
+      <description>NAND to Tetris My first programming course was taught in Java. I often got distracted during trying to imagine how Java worked under the hood. Type &amp;lt;code&amp;gt; and you get &amp;lt;output&amp;gt;. Wait, how? What happens when I declare a variable? and why do I need that static word up there? How does a text file get translated into something the computer can use? And then after translation.. how does the computer actually process that generated file?</description>
     </item>
     
   </channel>

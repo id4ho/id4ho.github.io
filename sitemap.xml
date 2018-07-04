@@ -3,8 +3,13 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>/posts/2016-02-14-markdown-guide/</loc>
-    <lastmod>2014-03-14T00:00:00+00:00</lastmod>
+    <loc>/posts/2018-06-11-the-universal-gate/</loc>
+    <lastmod>2018-06-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/posts/2018-06-04-nand-to-tetris/</loc>
+    <lastmod>2018-06-04T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -17,31 +22,31 @@
   </url>
   
   <url>
-    <loc>/categories/example/</loc>
-    <lastmod>2014-03-14T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/markdown/</loc>
-    <lastmod>2014-03-14T00:00:00+00:00</lastmod>
+    <loc>/tags/nand2tetris/</loc>
+    <lastmod>2018-06-11T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/posts/</loc>
-    <lastmod>2014-03-14T00:00:00+00:00</lastmod>
+    <lastmod>2018-06-11T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/</loc>
-    <lastmod>2014-03-14T00:00:00+00:00</lastmod>
+    <lastmod>2018-06-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/categories/programming/</loc>
+    <lastmod>2018-06-11T00:00:00+00:00</lastmod>
+    <priority>0</priority>
   </url>
   
   <url>
     <loc>/tags/</loc>
-    <lastmod>2014-03-14T00:00:00+00:00</lastmod>
+    <lastmod>2018-06-11T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   

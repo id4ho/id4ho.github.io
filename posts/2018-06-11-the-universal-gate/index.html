@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The Universal Gate - Week 1 | jackvnimble</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/theme-override.css">
+    <header>
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <nav>
+    <ul>
+      
+      
+      <li class="pull-left ">
+        <a href="/">jackvnimble</a>
+      </li>
+
+      
+      
+      <li class="pull-right ">
+        <a href="/about/">about</a>
+      </li>
+      
+      
+      <li class="pull-right ">
+        <a href="/categories/">categories</a>
+      </li>
+      
+      
+      <li class="pull-right ">
+        <a href="/tags/">tags</a>
+      </li>
+      
+    </ul>
+  </nav>
+</header>
+
+  </head>
+
+  <body>
+    <br/>
+
+
+<div class="content">
+  <div class="article-meta">
+  <h2><span class="title">The Universal Gate - Week 1</span></h2>
+  
+    <h3 class="date">[June 11, 2018]</h3>
+  
+  <p class="terms">
+    
+    
+    Categories: <a href="/categories/programming">programming</a> 
+    
+    
+    
+    Tags: <a href="/tags/nand2tetris">nand2tetris</a> 
+    
+    
+  </p>
+  </div>
+
+  
+
+  <main>
+    
+
+<h1 id="nand-the-universal-gate">NAND - The Universal Gate</h1>
+
+<p>This week we built a lot of logic gates or &ldquo;chips&rdquo; all using a single primitive:
+the humble NAND gate. NAND gates can be composed to build all other elementary
+logic gates and from those you can construct an ALU (arithmetic logic unit)
+and memory etc. This is why it&rsquo;s called <em>the Universal Gate</em> and why the course
+title is <strong>Nand to Tetris</strong><sup class="footnote-ref" id="fnref:1"><a href="#fn:1">1</a></sup>. AND/OR cannot be used as a primitive since they
+cannot invert.</p>
+
+<p>A NAND gate does the opposite of an AND gate. It takes two inputs (<code>a</code> and <code>b</code>
+below) which are either 0 or 1 (abstractly at least, on or off via some
+electrical impulse in a more literal sense) and returns one output. The truth
+table for the operation is as follows:</p>
+
+<table>
+<thead>
+<tr>
+<th align="center">a</th>
+<th align="center">b</th>
+<th align="center">out</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">1</td>
+</tr>
+
+<tr>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">1</td>
+</tr>
+
+<tr>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">1</td>
+</tr>
+
+<tr>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">0</td>
+</tr>
+</tbody>
+</table>
+
+<p>In Ruby:</p>
+
+<pre><code class="language-ruby">if x &amp;&amp; y
+  false
+else
+  true
+end
+</code></pre>
+
+<p>This is pretty straightforward. There are some other gates we need to create
+from this primitive: NOT, AND, OR, XOR, MUX, DMUX and then a bunch of multi-bit
+versions of the same (the most fun of which to implement were DMUX16 and
+MUX4WAY16).</p>
+
+<p>In order to write these gates we will use an HDL or hardware description
+language. The code written in an HDL is a specification for the physical
+electronic components and the I/O pins needed to produce an actual integrated
+circuit that performs the desired logic. The HDL API for a NOT gate has one <code>in</code>
+pin and one <code>out</code> pin and must conform to the below truth table.</p>
+
+<table>
+<thead>
+<tr>
+<th>in</th>
+<th>out</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>0</td>
+<td>1</td>
+</tr>
+
+<tr>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+
+<p>That&rsquo;s the entire contract. You can program a NOT gate with one NAND gate:</p>
+
+<pre><code>Nand(a=in, b=in, out=out)
+</code></pre>
+
+<p>Hook the single <code>in</code> pin up to <em>both</em> inputs of a <code>NAND</code> gate and route the
+output of the <code>NAND</code> gate to the output of the <code>NOT</code> gate. This results in the
+following possibilities:</p>
+
+<table>
+<thead>
+<tr>
+<th align="center">a</th>
+<th align="center">b</th>
+<th align="center">out</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">1</td>
+</tr>
+
+<tr>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">0</td>
+</tr>
+</tbody>
+</table>
+
+<p>Writing HDL that adheres to the chip API creates a blueprint of sorts that
+someone could use to create physical circuits. These gates or integrated
+circuits could be put on a chip and with enough of them arranged in the right
+way..used to execute programs.</p>
+
+<p>Major questions following this week:</p>
+
+<ol>
+<li>What types of gates/composition of gates are on a modern chip? How many of
+each?</li>
+<li>What are the steps between having a chip with a <strong>LOT</strong> of logic gates and
+getting it to do something programmatically?<sup class="footnote-ref" id="fnref:2"><a href="#fn:2">2</a></sup></li>
+<li>The idea of on/off = <sup>1</sup>&frasl;<sub>0</sub> is still pretty abstract to me. How do you
+selectively route electricity? My weak/non-extant EE background is coming
+into play here. I&rsquo;m familiar with the concept of an oscillator which can
+effectively function as a clock but I&rsquo;m having a hard time picturing what
+kind of component could be conditionally open/closed with software.</li>
+</ol>
+
+<p>Most interesting things this week:</p>
+
+<ol>
+<li>Writing the HDL code for the more advanced gates. It was a fun mental
+exercise to try to come up with the logic that accomplished the API contract.
+If you can&rsquo;t wrangle the abstractions in your head there&rsquo;s a really neat
+method to generate working HDL code by naively writing boolean logic until
+the outputs are satisfied and then reducing it based on boolean algebraic
+rules/laws is pretty cool. Post on how I created the MUX4WAY16 chip here</li>
+<li>How the multiplex/demultiplex works (at a basic primitive level) for
+communications. This really interesting and required a bit of a paradigm
+shift in how I thought about the inputs and outputs of the chips themselves.</li>
+</ol>
+<div class="footnotes">
+
+<hr />
+
+<ol>
+<li id="fn:1">the NOR gate can also be used.
+ <a class="footnote-return" href="#fnref:1">↩</a></li>
+<li id="fn:2">Luckily, this is the entire point of the course so I&rsquo;m confident this one will be answered
+ <a class="footnote-return" href="#fnref:2">↩</a></li>
+</ol>
+</div>
+
+  </main>
+</div>
+
+    <footer>
+      
+<script>
+(function() {
+  function center_el(tagName) {
+    var tags = document.getElementsByTagName(tagName), i, tag;
+    for (i = 0; i < tags.length; i++) {
+      tag = tags[i];
+      var parent = tag.parentElement;
+      
+      if (parent.childNodes.length === 1) {
+        
+        if (parent.nodeName === 'A') {
+          parent = parent.parentElement;
+          if (parent.childNodes.length != 1) continue;
+        }
+        if (parent.nodeName === 'P') parent.style.textAlign = 'center';
+      }
+    }
+  }
+  var tagNames = ['img', 'embed', 'object'];
+  for (var i = 0; i < tagNames.length; i++) {
+    center_el(tagNames[i]);
+  }
+})();
+</script>
+
+      
+      <hr/>
+      <a href="https://github.com/jackvnimble">Github</a> | <a href="https://twitter.com/jackvnimble">Twitter</a>
+      
+    </footer>
+  </body>
+</html>
+

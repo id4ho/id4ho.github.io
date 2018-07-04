@@ -2,7 +2,7 @@ body {
   max-width: 800px;
   margin: auto;
   padding: .2em;
-  line-height: 1.5em;
+  line-height: 1.25em;
   box-sizing: border-box;
 }
 
@@ -104,13 +104,13 @@ pre {
   padding: 1em;
   overflow-x: auto;
 }
-code { background: #f9f9f9; }
+code { background: #d5d5d5; }
 pre code { background: none; }
 
 /* Images, tables, misc. */
 img, iframe, video { max-width: 100%; }
 main {
-  hyphens: auto;
+  hyphens: none;
 }
 blockquote {
   background: #f9f9f9;
