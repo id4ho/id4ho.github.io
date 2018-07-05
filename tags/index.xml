@@ -6,10 +6,19 @@
     <description>Recent content in Tags on jackvnimble</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 11 Jun 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 04 Jul 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Failure, bouldering</title>
+      <link>/tags/failure-bouldering/</link>
+      <pubDate>Wed, 04 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/failure-bouldering/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Nand2tetris</title>
