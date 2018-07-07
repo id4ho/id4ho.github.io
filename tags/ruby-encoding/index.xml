@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ruby, encoding on jackvnimble</title>
+    <link>/tags/ruby-encoding/</link>
+    <description>Recent content in Ruby, encoding on jackvnimble</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 04 Jun 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/tags/ruby-encoding/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Ruby string encoding gotcha</title>
+      <link>/posts/2018-07-07-ruby-string-encoding/</link>
+      <pubDate>Mon, 04 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/2018-07-07-ruby-string-encoding/</guid>
+      <description>Ruby String Encoding If you program in a language long enough you&amp;rsquo;ll probably eventually run into weird string behavior due to string encoding differences (language depending). I experienced a gotcha today trying to compare two Ruby strings, both of which had the same length, same .inspect output, same binary representation..
+xord_result.bytes =&amp;gt; [203] &amp;quot;\xCB&amp;quot;.bytes =&amp;gt; [203] xord_result.length =&amp;gt; 1 &amp;quot;\xCB&amp;quot;.length =&amp;gt; 1 xord_result.class.name =&amp;gt; String &amp;quot;\xCB&amp;quot;.class.name =&amp;gt; String xord_result.bytes.map(&amp;amp;:ord).first.to_s(2) =&amp;gt; 11001011 &amp;quot;\xCB&amp;quot;.</description>
+    </item>
+    
+  </channel>
+</rss>

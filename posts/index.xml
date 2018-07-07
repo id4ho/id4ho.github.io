@@ -49,5 +49,15 @@ Background I&amp;rsquo;ve always had a slight but pervasive fear of failure. Tha
       <description>NAND to Tetris My first programming course was taught in Java. I often got distracted during trying to imagine how Java worked under the hood. Type &amp;lt;code&amp;gt; and you get &amp;lt;output&amp;gt;. Wait, how? What happens when I declare a variable? and why do I need that static word up there? How does a text file get translated into something the computer can use? And then after translation.. how does the computer actually process that generated file?</description>
     </item>
     
+    <item>
+      <title>Ruby string encoding gotcha</title>
+      <link>/posts/2018-07-07-ruby-string-encoding/</link>
+      <pubDate>Mon, 04 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/2018-07-07-ruby-string-encoding/</guid>
+      <description>Ruby String Encoding If you program in a language long enough you&amp;rsquo;ll probably eventually run into weird string behavior due to string encoding differences (language depending). I experienced a gotcha today trying to compare two Ruby strings, both of which had the same length, same .inspect output, same binary representation..
+xord_result.bytes =&amp;gt; [203] &amp;quot;\xCB&amp;quot;.bytes =&amp;gt; [203] xord_result.length =&amp;gt; 1 &amp;quot;\xCB&amp;quot;.length =&amp;gt; 1 xord_result.class.name =&amp;gt; String &amp;quot;\xCB&amp;quot;.class.name =&amp;gt; String xord_result.bytes.map(&amp;amp;:ord).first.to_s(2) =&amp;gt; 11001011 &amp;quot;\xCB&amp;quot;.</description>
+    </item>
+    
   </channel>
 </rss>

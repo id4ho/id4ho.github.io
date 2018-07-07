@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ruby string encoding gotcha | jackvnimble</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/theme-override.css">
+    <header>
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <nav>
+    <ul>
+      
+      
+      <li class="pull-left ">
+        <a href="/">jackvnimble</a>
+      </li>
+
+      
+      
+      <li class="pull-right ">
+        <a href="/about/">about</a>
+      </li>
+      
+      
+      <li class="pull-right ">
+        <a href="/categories/">categories</a>
+      </li>
+      
+      
+      <li class="pull-right ">
+        <a href="/tags/">tags</a>
+      </li>
+      
+    </ul>
+  </nav>
+</header>
+
+  </head>
+
+  <body>
+    <br/>
+
+
+<div class="content">
+  <div class="article-meta">
+  <h2><span class="title">Ruby string encoding gotcha</span></h2>
+  
+    <h3 class="date">[June 4, 2018]</h3>
+  
+  <p class="terms">
+    
+    
+    Categories: <a href="/categories/programming">programming</a> 
+    
+    
+    
+    Tags: <a href="/tags/ruby-encoding">ruby, encoding</a> 
+    
+    
+  </p>
+  </div>
+
+  
+
+  <main>
+    
+
+<h1 id="ruby-string-encoding">Ruby String Encoding</h1>
+
+<p>If you program in a language long enough you&rsquo;ll probably eventually run into
+weird string behavior due to string encoding differences (language depending). I
+experienced a gotcha today trying to compare two Ruby strings, both of which had
+the same length, same <code>.inspect</code> output, same binary representation..</p>
+
+<pre><code>xord_result.bytes =&gt; [203]
+&quot;\xCB&quot;.bytes =&gt; [203]
+xord_result.length =&gt; 1
+&quot;\xCB&quot;.length =&gt; 1
+xord_result.class.name =&gt; String
+&quot;\xCB&quot;.class.name =&gt; String
+xord_result.bytes.map(&amp;:ord).first.to_s(2) =&gt; 11001011
+&quot;\xCB&quot;.bytes.map(&amp;:ord).first.to_s(2) =&gt; 11001011
+</code></pre>
+
+<p>In short, they were the exact same strings as far as I could tell. But no matter
+how much evidence I gathered convincing myself they were the same my test output
+remained:</p>
+
+<pre><code>  1) CryptoPals.xor_with_single_chr single byte xors the hex and chr
+     Failure/Error: expect(xord_result).to eq &quot;\xCB&quot;
+
+       expected: &quot;\xCB&quot;
+            got: &quot;\xCB&quot;
+
+       (compared using ==)
+</code></pre>
+
+<p>What gives?</p>
+
+<pre><code>xord_result.encoding =&gt; ASCII-8BIT
+&quot;\xCB&quot;.encoding =&gt; UTF-8
+</code></pre>
+
+<p>What&rsquo;s odd is that my default encoding is utf-8..🤔</p>
+
+<pre><code>__ENCODING__
+#=&gt; UTF-8
+Encoding.default_internal
+#=&gt; UTF-8
+Encoding.default_external
+#=&gt; UTF-8
+</code></pre>
+
+<p>It turns out I was performing an action on a string (<code>.hex</code> followed by <code>.chr</code>)
+which changes the encoding of the bits being operated on:</p>
+
+<pre><code>irb(main):021:0&gt; hex_string = &quot;1c&quot;
+=&gt; &quot;1c&quot;
+irb(main):022:0&gt; hex_string.encoding
+=&gt; #&lt;Encoding:UTF-8&gt;
+irb(main):023:0&gt; hex_string.hex
+=&gt; 28
+irb(main):024:0&gt; hex_string.hex.chr
+=&gt; &quot;\x1C&quot;
+irb(main):025:0&gt; hex_string.hex.chr.encoding
+=&gt; #&lt;Encoding:US-ASCII&gt;
+</code></pre>
+
+<p>If you work with binary data in Ruby you may already aware of this gotcha, but
+if you don&rsquo;t often deal with binaries or hex keep this kind of issue in mind.</p>
+
+<p>While you can pass an encoding to <code>.chr</code>, that didn&rsquo;t work for my purposes so
+the solution to my issue was to compare the <code>.bytes</code> of the strings.</p>
+
+  </main>
+</div>
+
+    <footer>
+      
+<script>
+(function() {
+  function center_el(tagName) {
+    var tags = document.getElementsByTagName(tagName), i, tag;
+    for (i = 0; i < tags.length; i++) {
+      tag = tags[i];
+      var parent = tag.parentElement;
+      
+      if (parent.childNodes.length === 1) {
+        
+        if (parent.nodeName === 'A') {
+          parent = parent.parentElement;
+          if (parent.childNodes.length != 1) continue;
+        }
+        if (parent.nodeName === 'P') parent.style.textAlign = 'center';
+      }
+    }
+  }
+  var tagNames = ['img', 'embed', 'object'];
+  for (var i = 0; i < tagNames.length; i++) {
+    center_el(tagNames[i]);
+  }
+})();
+</script>
+
+      
+      <hr/>
+      <a href="https://github.com/jackvnimble">Github</a> | <a href="https://twitter.com/jackvnimble">Twitter</a>
+      
+    </footer>
+  </body>
+</html>
+

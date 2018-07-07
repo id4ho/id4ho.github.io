@@ -23,6 +23,11 @@
   </url>
   
   <url>
+    <loc>/posts/2018-07-07-ruby-string-encoding/</loc>
+    <lastmod>2018-06-04T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/about/</loc>
   </url>
   
@@ -63,6 +68,12 @@
   <url>
     <loc>/categories/programming/</loc>
     <lastmod>2018-06-11T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/ruby-encoding/</loc>
+    <lastmod>2018-06-04T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
