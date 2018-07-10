@@ -73,8 +73,9 @@
 
 <h1 id="hexadecimal">Hexadecimal</h1>
 
-<p>Recently I&rsquo;ve been jamming on the Cryptopals challenges in Ruby. Generally you
-work with the bits/data in hex. Ruby has some cool helpers to deal with hex:</p>
+<p>Recently, I&rsquo;ve been jamming on the <a href="cryptopals.com">Cryptopals</a> challenges in
+Ruby. Generally, you work with the data in hex and initially I was using
+<code>to_s(16)</code> method to convert bytes of data into hexadecimal:</p>
 
 <pre><code>irb(main):004:0&gt; string = &quot;jackvnimble&quot;
 =&gt; &quot;jackvnimble&quot;
@@ -101,12 +102,12 @@ irb(main):004:0&gt; with_tabs.length
 
 <p>At first glance this seems to work fine.</p>
 
-<p>However, we expect each byte to convert to 2 hex digits. So 24 isn&rsquo;t quite
-right and that tips us off that something is wrong.</p>
+<p>However, we expect each byte to convert to 2 hex digits. So the length of the
+output should really be 2x the input which tips us off that something isn&rsquo;t
+quite right.</p>
 
-<p>This just cost me about half an hour trying to xor a larger subset of text
-before I realized what was happening. Here&rsquo;s what happens when we convert back
-into a string:</p>
+<p>Let&rsquo;s see what happens when we convert back into a string to illustrate the
+issue:</p>
 
 <pre><code>irb(main):001:0&gt; with_tabs = &quot;jack\tv\tnimble&quot;
 =&gt; &quot;jack\tv\tnimble&quot;
@@ -126,16 +127,17 @@ irb(main):009:0&gt; with_tabs.bytes.map{ |byte| byte.to_s(16) }
 =&gt; [&quot;6a&quot;, &quot;61&quot;, &quot;63&quot;, &quot;6b&quot;, &quot;9&quot;, &quot;76&quot;, &quot;9&quot;, &quot;6e&quot;, &quot;69&quot;, &quot;6d&quot;, &quot;62&quot;, &quot;6c&quot;, &quot;65&quot;]
 </code></pre>
 
-<p>Ah! The tab characters are &lt; 16. That means they can be represented using one
-hex digit.. this is problematic because the binary that we are actually
-representing looks like this:</p>
+<p>Ah! The tab characters are actually smaller than 16 (when represented in
+decimal). That means they can be represented using one hex digit.. this is
+problematic because the binary that we are actually representing looks like
+this:</p>
 
 <pre><code>irb(main):012:0&gt; &quot;%08b&quot; % &quot;\t&quot;.ord
 =&gt; &quot;00001001&quot;
 </code></pre>
 
-<p>Those leading four zero&rsquo;s are not being maintained and that&rsquo;s cause the issue.
-To address this we can&rsquo;t use <code>to_s(16)</code> for generating our hex data:</p>
+<p>Those leading four zero&rsquo;s are not being maintained and that&rsquo;s causing the
+problem. To address this we can&rsquo;t use <code>to_s(16)</code> for generating our hex data:</p>
 
 <pre><code>irb(main):017:0&gt; with_tabs
 =&gt; &quot;jack\tv\tnimble&quot;
@@ -145,7 +147,7 @@ irb(main):019:0&gt; correct_hex.scan(/../).map { |hex_pair| hex_pair.hex.chr }.j
 =&gt; &quot;jack\tv\tnimble&quot;
 </code></pre>
 
-<p>This string formatting trick ensures that the hex is padded to two digits with
+<p>This string formatting method ensures that the hex is padded to two digits with
 0&rsquo;s and then we&rsquo;re able to go back and forth without losing any data!</p>
 
   </main>

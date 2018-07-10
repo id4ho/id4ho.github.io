@@ -17,7 +17,7 @@
       <pubDate>Mon, 09 Jul 2018 00:00:00 +0000</pubDate>
       
       <guid>/posts/2018-07-09-hex-in-ruby/</guid>
-      <description>Hexadecimal Recently I&amp;rsquo;ve been jamming on the Cryptopals challenges in Ruby. Generally you work with the bits/data in hex. Ruby has some cool helpers to deal with hex:
+      <description>Hexadecimal Recently, I&amp;rsquo;ve been jamming on the Cryptopals challenges in Ruby. Generally, you work with the data in hex and initially I was using to_s(16) method to convert bytes of data into hexadecimal:
 irb(main):004:0&amp;gt; string = &amp;quot;jackvnimble&amp;quot; =&amp;gt; &amp;quot;jackvnimble&amp;quot; irb(main):005:0&amp;gt; bytes = string.bytes =&amp;gt; [106, 97, 99, 107, 118, 110, 105, 109, 98, 108, 101] irb(main):006:0&amp;gt; bytes.map { |byte| byte.to_s(16) } =&amp;gt; [&amp;quot;6a&amp;quot;, &amp;quot;61&amp;quot;, &amp;quot;63&amp;quot;, &amp;quot;6b&amp;quot;, &amp;quot;76&amp;quot;, &amp;quot;6e&amp;quot;, &amp;quot;69&amp;quot;, &amp;quot;6d&amp;quot;, &amp;quot;62&amp;quot;, &amp;quot;6c&amp;quot;, &amp;quot;65&amp;quot;] irb(main):007:0&amp;gt; bytes.</description>
     </item>
     
