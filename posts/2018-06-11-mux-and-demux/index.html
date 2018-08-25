@@ -203,7 +203,7 @@ b_dest.compact.each_slice(8).map { |byte| byte.join.to_i(2).chr }.join #=&gt; &q
 
 <p>Uh oh. That doesn&rsquo;t look like <code>hello world</code>.. You may have guessed this outcome
 from the fact that <code>out</code> is the same length as the &ldquo;streams&rdquo; from <code>a_source</code> and
-<code>b_source</code>. Something was clearly dropped over the wire.<sup class="footnote-ref" id="fnref:1"><a href="#fn:1">1</a></sup>.</p>
+<code>b_source</code>. Something was clearly dropped over the wire.<sup class="footnote-ref" id="fnref:1"><a href="#fn:1">1</a></sup></p>
 
 <p>This means we are thinking about how MUX works in the wrong way. The inputs
 aren&rsquo;t passed in discretely like in a normal function/method call. The inputs

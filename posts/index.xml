@@ -17,7 +17,16 @@
       <pubDate>Tue, 17 Jul 2018 00:00:00 +0000</pubDate>
       
       <guid>/posts/2018-07-17-carry-look-ahead/</guid>
-      <description>I recently implemented a 16-bit adder chip in HDL using a bunch (16) of full adders. A full adder takes 3 bits, adds them and returns a sum and a carry bit. I wired the adders sequentially since the carry bit from the LSBs (least significant bit) needs to be piped into the full adder that&amp;rsquo;s adding the next least significant bits and so on. This is similar to how you perform pencil and paper addition and is called a &amp;ldquo;ripple carry&amp;rdquo; adder since the carry from the far right could potentially change every other column to the left:</description>
+      <description>I recently implemented a 16-bit adder chip in HDL using a bunch (16) of full adders. A full adder takes 3 bits, adds them and returns a sum and a carry bit. I wired the adders sequentially since the carry bit from the LSBs (least significant bit) needs to be piped into the full adder that&amp;rsquo;s adding the next least significant bits and so on. This is similar to how you perform pencil and paper addition and is called a &amp;ldquo;ripple carry&amp;rdquo; adder since the carry from the far right moves through the two numbers one column at a time as you perform the addition:</description>
+    </item>
+    
+    <item>
+      <title>Twos Complement</title>
+      <link>/posts/2018-07-17-twos-complement/</link>
+      <pubDate>Tue, 17 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/2018-07-17-twos-complement/</guid>
+      <description></description>
     </item>
     
     <item>

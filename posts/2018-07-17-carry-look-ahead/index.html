@@ -77,7 +77,8 @@ I wired the adders sequentially since the carry bit from the LSBs (least
 significant bit) needs to be piped into the full adder that&rsquo;s adding the next
 least significant bits and so on. This is similar to how you perform pencil and
 paper addition and is called a &ldquo;ripple carry&rdquo; adder since the carry from the far
-right could potentially change every other column to the left:</p>
+right moves through the two numbers one column at a time as you perform the
+addition:</p>
 
 <pre><code>0010100101100101
 1010110101001001
@@ -125,15 +126,19 @@ technique</em>.</p>
 
 <h3 id="carry-lookahead-overview">Carry Lookahead Overview</h3>
 
-<p>Carry lookahead splits the bits being added into groups. So if you were adding
-16 bit numbers they may be split into groups of 4. These groups then calculate
-whether the group itself will generate or propagate to the next group. This
-information is passed to an overarching LCU (lookahead carry unit) that does the
-calculation of whether the groups will get an input carry or not and passes it
-back down to the group. The group then performs a calculation with the carry
-value from the LCU. The insight here is that the group can actually define the
-sum value for each bit in terms of the input carry. Then, when it receives the
-input carry it can instantly spit out the sum.</p>
+<p>Carry lookahead splits the bits being added into groups. If you were adding 16
+bit numbers they may be split into groups of 4. These groups then calculate
+whether the group itself will <em>generate</em> or <em>propagate</em> a carry to the next
+group. This information is passed to an overarching LCU (lookahead carry unit)
+that does the calculation of whether the groups will get an input carry or not
+and passes it back down to the group. The group then performs a calculation with
+the carry value from the LCU.</p>
+
+<p>The insight here is that the group can actually define the overall carry for the
+group based solely upon the input bits and the original carry (without
+performing any additions!). Then, when the group receives the input carry (the
+least significant group doesn&rsquo;t need to wait since the C<sub>in</sub> is 0) it
+can instantly return the sum.</p>
 
 <h3 id="what-is-generate-and-propagate">What is Generate and Propagate?</h3>
 
@@ -147,8 +152,7 @@ they always generate a carry regardless of whether they receive a carry.</p>
 <p><strong>Propagate</strong>: P(A, B) = A | B</p>
 
 <p>They will &lsquo;propagate&rsquo; if the operation receives a carry, since one of the two
-must be 1. (you could implement this with <code>Xor</code> as well but that&rsquo;s more
-expensive and doesn&rsquo;t change the implementation as you&rsquo;ll see.</p>
+must be 1.<sup class="footnote-ref" id="fnref:1"><a href="#fn:1">1</a></sup></p>
 
 <h3 id="4-bit-lookahead-group-defining-later-carries-using-only-the-c-sub-in-sub">4 bit lookahead group - Defining later carries using only the C<sub>in</sub></h3>
 
@@ -190,17 +194,27 @@ which is an input)</p>
 <p>C<sub>3</sub> =
 (A<sub>3</sub>&amp;B<sub>3</sub>)|((A<sub>3</sub>|B<sub>3</sub>)&amp;((A<sub>2</sub>&amp;B<sub>2</sub>)|((A<sub>2</sub>|B<sub>2</sub>)&amp;((A<sub>1</sub>&amp;B<sub>1</sub>)|((A<sub>1</sub>|B<sub>1</sub>)&amp;((A<sub>0</sub>&amp;B<sub>0</sub>)|((A<sub>0</sub>|B<sub>0</sub>)&amp;C<sub>in</sub>)))))))</p>
 
-<p>This already looks super complex..but it can all be calculated without waiting
-for the previous gates to finish because it only depends on C<sub>in</sub>.</p>
+<p>This already looks a bit complex..but it can all be calculated without waiting
+for the previous gates to finish adding because it only depends on
+C<sub>in</sub>.</p>
 
 <h3 id="what-about-the-16-bit-adder">What about the 16 bit adder?</h3>
 
 <p>The above showed how to do a 4 bit adder in a way that avoids the ripple
 penalty. For the 16 bit lookahead you&rsquo;d do the above calculations for each of
-the four 4-bit groups. Then, the calculation for C<sub>3</sub> would need to be
-passed up to the LCU so that it could do the math for the input carries of the
-second, third and fourth group. The LCU would pass back the C<sub>in</sub> for
-the other groups and they would calculate like the above 4-bit block.</p>
+the four 4-bit groups. Then, the each group&rsquo;s calculation for C<sub>3</sub>
+would need to be passed up to the LCU so that it could do the math for the input
+carries of the second, third and fourth group. The LCU would pass back the
+C<sub>in</sub> for the other groups and they can then perform the addition.</p>
+<div class="footnotes">
+
+<hr />
+
+<ol>
+<li id="fn:1">You could implement this with <code>Xor</code> as well but that&rsquo;s more expensive and doesn&rsquo;t affect the implementation.
+ <a class="footnote-return" href="#fnref:1">↩</a></li>
+</ol>
+</div>
 
   </main>
 </div>
