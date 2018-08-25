@@ -6,10 +6,19 @@
     <description>Recent content in Programming on jackvnimble</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 09 Jul 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 17 Jul 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/programming/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Carry lookahead adder</title>
+      <link>/posts/2018-07-17-carry-look-ahead/</link>
+      <pubDate>Tue, 17 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/2018-07-17-carry-look-ahead/</guid>
+      <description>I recently implemented a 16-bit adder chip in HDL using a bunch (16) of full adders. A full adder takes 3 bits, adds them and returns a sum and a carry bit. I wired the adders sequentially since the carry bit from the LSBs (least significant bit) needs to be piped into the full adder that&amp;rsquo;s adding the next least significant bits and so on. This is similar to how you perform pencil and paper addition and is called a &amp;ldquo;ripple carry&amp;rdquo; adder since the carry from the far right could potentially change every other column to the left:</description>
+    </item>
     
     <item>
       <title>Hex in Ruby</title>
@@ -32,6 +41,16 @@ xord_result.bytes =&amp;gt; [203] &amp;quot;\xCB&amp;quot;.bytes =&amp;gt; [203]
     </item>
     
     <item>
+      <title>The Arithmetic Logic Unit (ALU) - Nand2Tetris Week 2</title>
+      <link>/posts/2018-06-17-week-2/</link>
+      <pubDate>Sun, 17 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/2018-06-17-week-2/</guid>
+      <description>Arithmetic Logic Unit This week we used the chips we built last week (And, Or, Not, Xor, Mux, Dmux and their multibit varieties) to build adders and an ALU. The adders and ALU are very important components of a CPU and a lot of operations performed by the CPU can be reduced to the addition of binary numbers.
+Adders We built both half and full adders. The half adder adds 2 bits and outputs both the sum of the bits and the carry bit.</description>
+    </item>
+    
+    <item>
       <title>Multiplexing and Demultiplexing</title>
       <link>/posts/2018-06-11-mux-and-demux/</link>
       <pubDate>Mon, 11 Jun 2018 00:00:00 +0000</pubDate>
@@ -42,7 +61,7 @@ xord_result.bytes =&amp;gt; [203] &amp;quot;\xCB&amp;quot;.bytes =&amp;gt; [203]
     </item>
     
     <item>
-      <title>The Universal Gate - Week 1</title>
+      <title>The Universal Gate - Nand2Tetris Week 1</title>
       <link>/posts/2018-06-11-the-universal-gate/</link>
       <pubDate>Mon, 11 Jun 2018 00:00:00 +0000</pubDate>
       

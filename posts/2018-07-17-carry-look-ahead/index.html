@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Carry lookahead adder | jackvnimble</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/theme-override.css">
+    <header>
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <nav>
+    <ul>
+      
+      
+      <li class="pull-left ">
+        <a href="/">jackvnimble</a>
+      </li>
+
+      
+      
+      <li class="pull-right ">
+        <a href="/about/">about</a>
+      </li>
+      
+      
+      <li class="pull-right ">
+        <a href="/categories/">categories</a>
+      </li>
+      
+      
+      <li class="pull-right ">
+        <a href="/tags/">tags</a>
+      </li>
+      
+    </ul>
+  </nav>
+</header>
+
+  </head>
+
+  <body>
+    <br/>
+
+
+<div class="content">
+  <div class="article-meta">
+  <h2><span class="title">Carry lookahead adder</span></h2>
+  
+    <h3 class="date">[July 17, 2018]</h3>
+  
+  <p class="terms">
+    
+    
+    Categories: <a href="/categories/programming">programming</a> 
+    
+    
+    
+    Tags: <a href="/tags/nand2tetris">nand2tetris</a> 
+    
+    
+  </p>
+  </div>
+
+  
+
+  <main>
+    
+
+<p>I recently implemented a 16-bit adder chip in HDL using a bunch (16) of full
+adders. A full adder takes 3 bits, adds them and returns a sum and a carry bit.
+I wired the adders sequentially since the carry bit from the LSBs (least
+significant bit) needs to be piped into the full adder that&rsquo;s adding the next
+least significant bits and so on. This is similar to how you perform pencil and
+paper addition and is called a &ldquo;ripple carry&rdquo; adder since the carry from the far
+right could potentially change every other column to the left:</p>
+
+<pre><code>0010100101100101
+1010110101001001
+________________
+----------------
+               ^
+               |
+</code></pre>
+
+<pre><code>              1
+0010100101100101
+1010110101001001
+________________
+---------------0
+              ^
+              |
+</code></pre>
+
+<p>The final ripple carry implementation in HDL looked something like this:</p>
+
+<pre><code>FullAdder(a=a[0], b=b[0], c=false, sum=out[0], carry=carry0);
+FullAdder(a=a[1], b=b[1], c=carry0, sum=out[1], carry=carry1);
+FullAdder(a=a[2], b=b[2], c=carry1, sum=out[2], carry=carry2);
+FullAdder(a=a[3], b=b[3], c=carry2, sum=out[3], carry=carry3);
+FullAdder(a=a[4], b=b[4], c=carry3, sum=out[4], carry=carry4);
+FullAdder(a=a[5], b=b[5], c=carry4, sum=out[5], carry=carry5);
+FullAdder(a=a[6], b=b[6], c=carry5, sum=out[6], carry=carry6);
+FullAdder(a=a[7], b=b[7], c=carry6, sum=out[7], carry=carry7);
+FullAdder(a=a[8], b=b[8], c=carry7, sum=out[8], carry=carry8);
+FullAdder(a=a[9], b=b[9], c=carry8, sum=out[9], carry=carry9);
+FullAdder(a=a[10], b=b[10], c=carry9, sum=out[10], carry=carry10);
+FullAdder(a=a[11], b=b[11], c=carry10, sum=out[11], carry=carry11);
+FullAdder(a=a[12], b=b[12], c=carry11, sum=out[12], carry=carry12);
+FullAdder(a=a[13], b=b[13], c=carry12, sum=out[13], carry=carry13);
+FullAdder(a=a[14], b=b[14], c=carry13, sum=out[14], carry=carry14);
+FullAdder(a=a[15], b=b[15], c=carry14, sum=out[15], carry=carry15);
+</code></pre>
+
+<p>Because the carry bit from the first <code>FullAdder</code>, <code>carry0</code>, needs to be passed to the
+next adder, which then passes <code>carry1</code> to the next <code>FullAdder</code> and so
+on, this sequential adder is inefficient (at least as far as computers are
+concerned). There is a way to speed this up by making the logic a bit more
+complex (somewhat counter-intuitively) and utilizing a <em>carry lookahead
+technique</em>.</p>
+
+<h3 id="carry-lookahead-overview">Carry Lookahead Overview</h3>
+
+<p>Carry lookahead splits the bits being added into groups. So if you were adding
+16 bit numbers they may be split into groups of 4. These groups then calculate
+whether the group itself will generate or propagate to the next group. This
+information is passed to an overarching LCU (lookahead carry unit) that does the
+calculation of whether the groups will get an input carry or not and passes it
+back down to the group. The group then performs a calculation with the carry
+value from the LCU. The insight here is that the group can actually define the
+sum value for each bit in terms of the input carry. Then, when it receives the
+input carry it can instantly spit out the sum.</p>
+
+<h3 id="what-is-generate-and-propagate">What is Generate and Propagate?</h3>
+
+<p>Given two input bits, A and B:</p>
+
+<p><strong>Generate</strong>: G(A, B) = A &amp; B</p>
+
+<p>They are said to &lsquo;generate&rsquo; when both are 1. I.e.
+they always generate a carry regardless of whether they receive a carry.</p>
+
+<p><strong>Propagate</strong>: P(A, B) = A | B</p>
+
+<p>They will &lsquo;propagate&rsquo; if the operation receives a carry, since one of the two
+must be 1. (you could implement this with <code>Xor</code> as well but that&rsquo;s more
+expensive and doesn&rsquo;t change the implementation as you&rsquo;ll see.</p>
+
+<h3 id="4-bit-lookahead-group-defining-later-carries-using-only-the-c-sub-in-sub">4 bit lookahead group - Defining later carries using only the C<sub>in</sub></h3>
+
+<p>C<sub>i</sub> = G<sub>i</sub> | (P<sub>i</sub> &amp; C<sub>i-1</sub>)</p>
+
+<p>There will be a carry at <code>i</code> if those two bits generate, *<em>or</em>* those bits propagate
+*<em>and</em>* there was an input carry.</p>
+
+<p>G<sub>0</sub> = A<sub>0</sub> &amp; B<sub>0</sub></p>
+
+<p>P<sub>0</sub> = A<sub>0</sub> | B<sub>0</sub></p>
+
+<p>We can then define all the carry bits of the 4bit lookahead group (the original carry bit is called C<sub>in</sub>):</p>
+
+<p>C<sub>0</sub> = G<sub>0</sub> | (P<sub>0</sub> &amp; C<sub>in</sub>)</p>
+
+<p>C<sub>1</sub> = G<sub>1</sub> | (P<sub>1</sub> &amp; C<sub>0</sub>)</p>
+
+<p>C<sub>1</sub> = G<sub>1</sub> | (P<sub>1</sub> &amp; (G<sub>0</sub> | (P<sub>0</sub> &amp; C<sub>in</sub>)))</p>
+
+<p>C<sub>2</sub> = G<sub>2</sub> | (P<sub>2</sub> &amp; C<sub>1</sub>)</p>
+
+<p>C<sub>2</sub> = G<sub>2</sub> | (P<sub>2</sub> &amp; (G<sub>1</sub> | (P<sub>1</sub> &amp; (G<sub>0</sub> | (P<sub>0</sub> &amp; C<sub>in</sub>)))))</p>
+
+<p>C<sub>3</sub> = G<sub>3</sub> | (P<sub>3</sub> &amp; C<sub>2</sub>)</p>
+
+<p>C<sub>3</sub> = G<sub>3</sub> | (P<sub>3</sub> &amp; (G<sub>2</sub> | (P<sub>2</sub> &amp; (G<sub>1</sub> | (P<sub>1</sub> &amp; (G<sub>0</sub> | (P<sub>0</sub> &amp; C<sub>in</sub>)))))))</p>
+
+<p>At this point we&rsquo;ve defined all 4 bit&rsquo;s carries using only values known
+beforehand (i.e. the bits from the numbers you&rsquo;re adding and C<sub>in</sub>
+which is an input)</p>
+
+<p>C<sub>0</sub> = (A<sub>0</sub>&amp;B<sub>0</sub>)|((A<sub>0</sub>|B<sub>0</sub>)&amp;C<sub>in</sub>)</p>
+
+<p>C<sub>1</sub> = (A<sub>1</sub>&amp;B<sub>1</sub>)|((A<sub>1</sub>|B<sub>1</sub>)&amp;((A<sub>0</sub>&amp;B<sub>0</sub>)|((A<sub>0</sub>|B<sub>0</sub>)&amp;C<sub>in</sub>)))</p>
+
+<p>C<sub>2</sub> = (A<sub>2</sub>&amp;B<sub>2</sub>)|((A<sub>2</sub>|B<sub>2</sub>)&amp;((A<sub>1</sub>&amp;B<sub>1</sub>)|((A<sub>1</sub>|B<sub>1</sub>)&amp;((A<sub>0</sub>&amp;B<sub>0</sub>)|((A<sub>0</sub>|B<sub>0</sub>)&amp;C<sub>in</sub>)))))</p>
+
+<p>C<sub>3</sub> =
+(A<sub>3</sub>&amp;B<sub>3</sub>)|((A<sub>3</sub>|B<sub>3</sub>)&amp;((A<sub>2</sub>&amp;B<sub>2</sub>)|((A<sub>2</sub>|B<sub>2</sub>)&amp;((A<sub>1</sub>&amp;B<sub>1</sub>)|((A<sub>1</sub>|B<sub>1</sub>)&amp;((A<sub>0</sub>&amp;B<sub>0</sub>)|((A<sub>0</sub>|B<sub>0</sub>)&amp;C<sub>in</sub>)))))))</p>
+
+<p>This already looks super complex..but it can all be calculated without waiting
+for the previous gates to finish because it only depends on C<sub>in</sub>.</p>
+
+<h3 id="what-about-the-16-bit-adder">What about the 16 bit adder?</h3>
+
+<p>The above showed how to do a 4 bit adder in a way that avoids the ripple
+penalty. For the 16 bit lookahead you&rsquo;d do the above calculations for each of
+the four 4-bit groups. Then, the calculation for C<sub>3</sub> would need to be
+passed up to the LCU so that it could do the math for the input carries of the
+second, third and fourth group. The LCU would pass back the C<sub>in</sub> for
+the other groups and they would calculate like the above 4-bit block.</p>
+
+  </main>
+</div>
+
+    <footer>
+      
+<script>
+(function() {
+  function center_el(tagName) {
+    var tags = document.getElementsByTagName(tagName), i, tag;
+    for (i = 0; i < tags.length; i++) {
+      tag = tags[i];
+      var parent = tag.parentElement;
+      
+      if (parent.childNodes.length === 1) {
+        
+        if (parent.nodeName === 'A') {
+          parent = parent.parentElement;
+          if (parent.childNodes.length != 1) continue;
+        }
+        if (parent.nodeName === 'P') parent.style.textAlign = 'center';
+      }
+    }
+  }
+  var tagNames = ['img', 'embed', 'object'];
+  for (var i = 0; i < tagNames.length; i++) {
+    center_el(tagNames[i]);
+  }
+})();
+</script>
+
+      
+      <hr/>
+      <a href="https://github.com/jackvnimble">Github</a> | <a href="https://twitter.com/jackvnimble">Twitter</a>
+      
+    </footer>
+  </body>
+</html>
+

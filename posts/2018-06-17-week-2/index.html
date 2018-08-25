@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The Arithmetic Logic Unit (ALU) - Nand2Tetris Week 2 | jackvnimble</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/theme-override.css">
+    <header>
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <nav>
+    <ul>
+      
+      
+      <li class="pull-left ">
+        <a href="/">jackvnimble</a>
+      </li>
+
+      
+      
+      <li class="pull-right ">
+        <a href="/about/">about</a>
+      </li>
+      
+      
+      <li class="pull-right ">
+        <a href="/categories/">categories</a>
+      </li>
+      
+      
+      <li class="pull-right ">
+        <a href="/tags/">tags</a>
+      </li>
+      
+    </ul>
+  </nav>
+</header>
+
+  </head>
+
+  <body>
+    <br/>
+
+
+<div class="content">
+  <div class="article-meta">
+  <h2><span class="title">The Arithmetic Logic Unit (ALU) - Nand2Tetris Week 2</span></h2>
+  
+    <h3 class="date">[June 17, 2018]</h3>
+  
+  <p class="terms">
+    
+    
+    Categories: <a href="/categories/programming">programming</a> 
+    
+    
+    
+    Tags: <a href="/tags/nand2tetris">nand2tetris</a> 
+    
+    
+  </p>
+  </div>
+
+  
+
+  <main>
+    
+
+<h1 id="arithmetic-logic-unit">Arithmetic Logic Unit</h1>
+
+<p>This week we used the chips we built last week (And, Or, Not, Xor, Mux, Dmux and
+their multibit varieties) to build adders and an ALU. The adders and ALU are
+very important components of a CPU and a lot of operations performed by the CPU
+can be reduced to the addition of binary numbers.</p>
+
+<h1 id="adders">Adders</h1>
+
+<p>We built both half and full adders. The half adder adds 2 bits and outputs both
+the sum of the bits and the carry bit.</p>
+
+<h4 id="half-adder">Half Adder:</h4>
+
+<table>
+<thead>
+<tr>
+<th align="center">a</th>
+<th align="center">b</th>
+<th align="center">sum</th>
+<th align="center">carry</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+
+<tr>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">0</td>
+</tr>
+
+<tr>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">0</td>
+</tr>
+
+<tr>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">1</td>
+</tr>
+</tbody>
+</table>
+
+<p>What&rsquo;s cool about this chip is that it&rsquo;s just two of the elementary gates from
+last week (sum = Xor(inputs), carry = And(inputs)).</p>
+
+<h4 id="full-adder">Full Adder:</h4>
+
+<p>The full adder adds one new input to the half adder.. you can probably guess
+that this is leading up to handling the carry from a previous operation.</p>
+
+<table>
+<thead>
+<tr>
+<th align="center">a</th>
+<th align="center">b</th>
+<th align="center">c</th>
+<th align="center">sum</th>
+<th align="center">carry</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">0</td>
+</tr>
+
+<tr>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">0</td>
+</tr>
+
+<tr>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">0</td>
+</tr>
+
+<tr>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">1</td>
+</tr>
+
+<tr>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">0</td>
+</tr>
+
+<tr>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">1</td>
+</tr>
+
+<tr>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">0</td>
+<td align="center">0</td>
+<td align="center">1</td>
+</tr>
+
+<tr>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">1</td>
+<td align="center">1</td>
+</tr>
+</tbody>
+</table>
+
+<p>This gate can be constructed with 2 half adders (hence the name!) along with an
+extra gate to handle the carries.</p>
+
+<h4 id="16-bit-adder">16 bit adder</h4>
+
+<p>This chip takes two 16 bit inputs and adds them. Once you&rsquo;ve built the Full
+Adder this pretty much comes for free since you just pipe the carry through a
+Full Adders. The most significant bit (MSB, i.e. carry) is ignored/dropped.<sup class="footnote-ref" id="fnref:1"><a href="#fn:1">1</a></sup></p>
+
+<h4 id="16-bit-incrementer">16 bit incrementer</h4>
+
+<p>This chip simply adds 1 to a 16 bit input and ignores the MSB. Once you have a
+16 bit adder you can send a 0000 0000 0000 0001 in as one of the inputs to
+achieve this.</p>
+
+<h4 id="alu">ALU</h4>
+
+<p>Finally with all the above you can build an ALU or arithmetic logic unit. This
+unit is a key component of a CPU. The ALU is specific to the hardware
+architecture, unlike the gates so far which are universal. The ALU will
+typically take two inputs (at whatever size the bus is for the architecture),
+several control bits and perform a function depending on those control bits,
+return the output of that function (one bus width) and set a couple control bits
+based on the result of the function. The ALU we built has 6 control bits, which
+could theoretically map to 64 different functions (2**6), however we only
+build 18 into the chip based on the table below:</p>
+
+<p><img src="/images/alu.png" alt="alu" /></p>
+
+<p>There is no multiplication or division, but we can implement those in the
+software layer using the functionality provided above. Kind of crazy that this
+is all that&rsquo;s necessary to build a fully-featured computer (one that can write
+any arbitrary software)</p>
+
+<h4 id="major-questions">Major questions:</h4>
+
+<p>I&rsquo;d say this week was pretty straightforward, but at the same time didn&rsquo;t shed
+any light on last week&rsquo;s questions, so those will just have to <em>carry</em> forward.</p>
+
+<h4 id="most-interesting-things-this-week">Most interesting things this week</h4>
+
+<ol>
+<li>Twos complement binary number representation. I&rsquo;d read about this before but
+without having to implement any of the low level functionality the beauty was
+lost on me.</li>
+</ol>
+<div class="footnotes">
+
+<hr />
+
+<ol>
+<li id="fn:1">This is (apparently) quite inefficient since piping the carry through takes a lot of time. This can be mitigated with <a href="/posts/2018-07-17-carry-look-ahead/">carry look-aheads</a>. Since this addition functionality is used so prevalently when doing any computation, the performance of this chip can seriously impact global performance of the CPU/computer.
+ <a class="footnote-return" href="#fnref:1">↩</a></li>
+</ol>
+</div>
+
+  </main>
+</div>
+
+    <footer>
+      
+<script>
+(function() {
+  function center_el(tagName) {
+    var tags = document.getElementsByTagName(tagName), i, tag;
+    for (i = 0; i < tags.length; i++) {
+      tag = tags[i];
+      var parent = tag.parentElement;
+      
+      if (parent.childNodes.length === 1) {
+        
+        if (parent.nodeName === 'A') {
+          parent = parent.parentElement;
+          if (parent.childNodes.length != 1) continue;
+        }
+        if (parent.nodeName === 'P') parent.style.textAlign = 'center';
+      }
+    }
+  }
+  var tagNames = ['img', 'embed', 'object'];
+  for (var i = 0; i < tagNames.length; i++) {
+    center_el(tagNames[i]);
+  }
+})();
+</script>
+
+      
+      <hr/>
+      <a href="https://github.com/jackvnimble">Github</a> | <a href="https://twitter.com/jackvnimble">Twitter</a>
+      
+    </footer>
+  </body>
+</html>
+
