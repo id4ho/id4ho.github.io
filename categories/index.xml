@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Categories on jackvnimble</title>
+    <title>Categories on k3lsi3r</title>
     <link>/categories/</link>
-    <description>Recent content in Categories on jackvnimble</description>
+    <description>Recent content in Categories on k3lsi3r</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     
@@ -11,7 +11,7 @@
     
     
     <item>
-      <title>Climbing</title>
+      <title>climbing</title>
       <link>/categories/climbing/</link>
       <pubDate>Wed, 04 Jul 2018 00:00:00 +0000</pubDate>
       
@@ -20,11 +20,29 @@
     </item>
     
     <item>
-      <title>Programming</title>
+      <title>cryptography</title>
+      <link>/categories/cryptography/</link>
+      <pubDate>Mon, 22 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/cryptography/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>programming</title>
       <link>/categories/programming/</link>
-      <pubDate>Tue, 17 Jul 2018 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 22 Oct 2018 00:00:00 +0000</pubDate>
       
       <guid>/categories/programming/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>security</title>
+      <link>/categories/security/</link>
+      <pubDate>Mon, 22 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/security/</guid>
       <description></description>
     </item>
     

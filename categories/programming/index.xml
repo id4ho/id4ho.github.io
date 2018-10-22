@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Programming on jackvnimble</title>
+    <title>programming on k3lsi3r</title>
     <link>/categories/programming/</link>
-    <description>Recent content in Programming on jackvnimble</description>
+    <description>Recent content in programming on k3lsi3r</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 17 Jul 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 22 Oct 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/programming/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Repeating key xor and Hamming distance</title>
+      <link>/posts/2018-10-22-repeating-key-xor-hamming-distance/</link>
+      <pubDate>Mon, 22 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/2018-10-22-repeating-key-xor-hamming-distance/</guid>
+      <description>I&amp;rsquo;ve been working through the cryptopals challenge set in Rust as a way to both learn about cryptography and learn Rust at the same time. One of the first significant challenges is writing code to break a repeating key xor cipher where you don&amp;rsquo;t know the length of the key. Without the tip on Hamming distance in the problem description, one (read: &amp;lsquo;I&amp;rsquo;) might attempt to solve the problem with a heinously inefficient algorithm to try every reasonable keysize.</description>
+    </item>
     
     <item>
       <title>Carry lookahead adder</title>

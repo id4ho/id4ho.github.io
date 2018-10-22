@@ -1,27 +1,71 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tags on jackvnimble</title>
+    <title>Tags on k3lsi3r</title>
     <link>/tags/</link>
-    <description>Recent content in Tags on jackvnimble</description>
+    <description>Recent content in Tags on k3lsi3r</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 04 Jul 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Failure, bouldering</title>
-      <link>/tags/failure-bouldering/</link>
+      <title>bouldering</title>
+      <link>/tags/bouldering/</link>
       <pubDate>Wed, 04 Jul 2018 00:00:00 +0000</pubDate>
       
-      <guid>/tags/failure-bouldering/</guid>
+      <guid>/tags/bouldering/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>Nand2tetris</title>
+      <title>cryptopals</title>
+      <link>/tags/cryptopals/</link>
+      <pubDate>Mon, 22 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/cryptopals/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>encoding</title>
+      <link>/tags/encoding/</link>
+      <pubDate>Sat, 07 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/encoding/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>failure</title>
+      <link>/tags/failure/</link>
+      <pubDate>Wed, 04 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/failure/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>hamming_distance</title>
+      <link>/tags/hamming_distance/</link>
+      <pubDate>Mon, 22 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/hamming_distance/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>hex</title>
+      <link>/tags/hex/</link>
+      <pubDate>Mon, 09 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/hex/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>nand2tetris</title>
       <link>/tags/nand2tetris/</link>
       <pubDate>Tue, 17 Jul 2018 00:00:00 +0000</pubDate>
       
@@ -30,20 +74,11 @@
     </item>
     
     <item>
-      <title>Ruby, encoding</title>
-      <link>/tags/ruby-encoding/</link>
-      <pubDate>Sat, 07 Jul 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/ruby-encoding/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Ruby, hex</title>
-      <link>/tags/ruby-hex/</link>
+      <title>ruby</title>
+      <link>/tags/ruby/</link>
       <pubDate>Mon, 09 Jul 2018 00:00:00 +0000</pubDate>
       
-      <guid>/tags/ruby-hex/</guid>
+      <guid>/tags/ruby/</guid>
       <description></description>
     </item>
     

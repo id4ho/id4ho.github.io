@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Repeating key xor and Hamming distance | k3lsi3r</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/theme-override.css">
+    <header>
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <nav>
+    <ul>
+      
+      
+      <li class="pull-left ">
+        <a href="/">k3lsi3r</a>
+      </li>
+
+      
+      
+      <li class="pull-right ">
+        <a href="/about/">about</a>
+      </li>
+      
+      
+      <li class="pull-right ">
+        <a href="/categories/">categories</a>
+      </li>
+      
+      
+      <li class="pull-right ">
+        <a href="/tags/">tags</a>
+      </li>
+      
+    </ul>
+  </nav>
+</header>
+
+  </head>
+
+  <body>
+    <br/>
+
+
+<div class="content">
+  <div class="article-meta">
+  <h2><span class="title">Repeating key xor and Hamming distance</span></h2>
+  
+    <h3 class="date">[October 22, 2018]</h3>
+  
+  <p class="terms">
+    
+    
+    Categories: <a href="/categories/programming">programming</a> <a href="/categories/cryptography">cryptography</a> <a href="/categories/security">security</a> 
+    
+    
+    
+    Tags: <a href="/tags/hamming_distance">hamming_distance</a> <a href="/tags/cryptopals">cryptopals</a> 
+    
+    
+  </p>
+  </div>
+
+  
+
+  <main>
+    
+
+<p>I&rsquo;ve been working through the cryptopals challenge set in Rust as a way to both
+learn about cryptography and learn Rust at the same time. One of the first
+significant challenges is writing code to break a repeating key xor cipher where
+you don&rsquo;t know the length of the key. Without the tip on Hamming distance in the
+problem description, one (read: &lsquo;I&rsquo;) might attempt to solve the problem with a
+heinously inefficient algorithm to try every reasonable keysize. There is, as
+usual, a much simpler (and more interesting!) way.</p>
+
+<h4 id="known-keysize-xor">Known keysize xor</h4>
+
+<p>If you know the key length it is straightforward to programmatically crack a
+repeating key xor problem. You brute force the key space and evaluate the
+decrypted text to determine how similar it is to english (assuming you know the
+plaintext to be english). This involves evaluating the frequencies of the
+characters.. <a href="https://en.wikipedia.org/wiki/Etaoin_shrdlu">etaoin shrdlu</a>.
+Whichever is closest to the expected english letter frequencies is likely the
+actual plaintext. But what if you don&rsquo;t know the keysize?</p>
+
+<h4 id="hamming-distance">Hamming distance</h4>
+
+<p>There is a way to determine the likely key length which involves calculating the
+hamming distances for various block sizes and finding the block size that yeilds
+the smallest hamming distance.</p>
+
+<p>First, what is Hamming distance? This is simply the edit distance between two
+bitstreams of equal length. I.e. how many bits do I need to flip in the first
+bitstream to make it equal the second bitstream. You can calculate this by
+xoring the two and counting the 1&rsquo;s in the result (since 0,0 and 1,1, pairs will
+both be 0 in the xor result). This is a measure of how closely related the two
+strings are.</p>
+
+<p>With this measurement function you can then iterate through possible key length
+sizes say.. 2 to 40<sup class="footnote-ref" id="fnref:1"><a href="#fn:1">1</a></sup> and find the size with the smallest normalized<sup class="footnote-ref" id="fnref:2"><a href="#fn:2">2</a></sup>
+Hamming distance.</p>
+
+<p>These instructions are enough to solve the problem but don&rsquo;t really explain
+<em>why</em> this technique works. I&rsquo;ll try to do so below using some examples.</p>
+
+<h4 id="why-search-for-a-small-hamming-distance">Why search for a small Hamming distance?</h4>
+
+<p>First let&rsquo;s take the hamming distance of two blocks of plaintext (I&rsquo;m using
+block here to denote that the strings are the same length):</p>
+
+<pre><code>string1: &quot;this is a fantastic desk chair&quot;
+string2: &quot;here is a short bit of english&quot;
+hamming distance: 60
+</code></pre>
+
+<p>Ok, now let&rsquo;s xor these two strings with a random xor key and take the distance
+of those two blocks:</p>
+
+<pre><code>xor key: &quot;MLYHziJ4X748S7mV2Uen2IZ1TYoGkx&quot;
+string1 xord with the key =&gt;
+&quot;9$0;Z\u{0}9\u{14}9\u{17}RY=C\u{c}%F&lt;\u{6}NV,)Zt:\u{7}&amp;\u{2}\n&quot;
+string2 xord with the key =&gt;
+&quot;%)+-Z\u{0}9\u{14}9\u{17}GP&lt;E\u{19}vP&lt;\u{11}N]/zT:&gt;\u{3}.\u{18}\u{10}&quot;
+distance of two xor'd blocks: 60
+</code></pre>
+
+<p>Could be a coincidence.. let&rsquo;s try with a different random key:</p>
+
+<pre><code>xor key: &quot;Dx4TJaHyBnVvxK2JXoA3Bb0RdWDo0Y&quot;
+string1 xord with the key =&gt; &quot;0\u{10}]\'j\u{8};Y#N0\u{17}\u{16}?S9,\u{6}\&quot;\u{13}&amp;\u{7}C9D4,\u{e}Y+&quot;
+string2 xord with the key =&gt; &quot;,\u{1d}F1j\u{8};Y#N%\u{1e}\u{17}9Fj:\u{6}5\u{13}-\u{4}\u{10}7\n0(\u{6}C1&quot;
+distance of two xor'd blocks: 60
+</code></pre>
+
+<p>The reason this is consistent is that since you&rsquo;re xoring two strings that have
+been xor&rsquo;d with the same key. One property of xor is that xoring the same thing
+twice yields a string of zeros which is the identity string with regards to
+xoring. Furthermore, xor is commutative (order doesn&rsquo;t matter). So the keys
+effectively cancel each other out and you wind up with the xor of the two
+plaintext strings.</p>
+
+<p>The upshot of this is that if we guess the right length for the key we are
+actually looking at the edit distance between two plaintext blocks(!!).</p>
+
+<p>Now let&rsquo;s see what happens when we compute the edit distances using the
+incorrect keylength. The hypothesis here is that the edit distance will be is
+larger.</p>
+
+<pre><code>plaintext: &quot;welcome to the zoo&quot;
+xor_key (length 9): &quot;·hÀ\&quot;®¹ùÒ)&quot;
+xord together =&gt; &quot;À\r¬AÁÔ\u{9c}ò]ØH´JË\u{99}\u{83}½F&quot;
+</code></pre>
+
+<p>We&rsquo;ve xor&rsquo;d the plaintext with a repeating key of length 9. If we assume a
+keylength of 6:</p>
+
+<pre><code>the first xord block looks like: &quot;À\r¬AÁÔ&quot;
+the second xord block looks like: &quot;\u{9c}ò]ØH´&quot;
+the hamming distance: 26
+the normalized hamming distance for block length 6 is: 4.3333335
+</code></pre>
+
+<p>Now let&rsquo;s try with a blocksize of 9 (the correct length)</p>
+
+<pre><code>the first xord block looks like: &quot;À\r¬AÁÔ\u{9c}ò]&quot;
+the second xord block looks like: &quot;ØH´JË\u{99}\u{83}½F&quot;
+the hamming distance: 30
+the normalized hamming distance for block length 9 is: 3.3333333
+</code></pre>
+
+<p>Since the ciphertext changes every time, the number for the size 6 block jumps
+around a bit each time the code that generates the above is run. The 3.333,
+however, is consistent (since the keys are canceled out and we are actually
+looking at the xor of the two plaintext blocks).</p>
+
+<p>Note that since the keys are random, there is a chance that the edit distance of
+the incorrect sized block is randomly small for a given key (more likely if that
+key is only ascii charcters). Therefore to effectively utlized this technique
+it&rsquo;s best to look at several blocks and not just the first two. When I solved
+this problem I averaged the normalized distances of every pair of blocks in the
+first 4 (cartesian product).</p>
+
+<p>An important thing to note about why this technique works is that the edit
+distance between a string of english and another string of english will
+generally (hence the averaging of multiple blocks) be smaller than the edit
+distance between two strings of random bytes which is what you get when you pick
+the wrong block size.</p>
+<div class="footnotes">
+
+<hr />
+
+<ol>
+<li id="fn:1">as recommended by Cryptopals problem description
+ <a class="footnote-return" href="#fnref:1">↩</a></li>
+<li id="fn:2">divide the distance by the length of the block
+ <a class="footnote-return" href="#fnref:2">↩</a></li>
+</ol>
+</div>
+
+  </main>
+</div>
+
+    <footer>
+      
+<script>
+(function() {
+  function center_el(tagName) {
+    var tags = document.getElementsByTagName(tagName), i, tag;
+    for (i = 0; i < tags.length; i++) {
+      tag = tags[i];
+      var parent = tag.parentElement;
+      
+      if (parent.childNodes.length === 1) {
+        
+        if (parent.nodeName === 'A') {
+          parent = parent.parentElement;
+          if (parent.childNodes.length != 1) continue;
+        }
+        if (parent.nodeName === 'P') parent.style.textAlign = 'center';
+      }
+    }
+  }
+  var tagNames = ['img', 'embed', 'object'];
+  for (var i = 0; i < tagNames.length; i++) {
+    center_el(tagNames[i]);
+  }
+})();
+</script>
+
+      
+      <hr/>
+      <a href="https://github.com/k3lsi3r">Github</a>
+      
+    </footer>
+  </body>
+</html>
+
