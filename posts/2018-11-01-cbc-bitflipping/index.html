@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CBC Bitflipping Attack | id4ho</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/theme-override.css">
+    <header>
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <nav>
+    <ul>
+      
+      
+      <li class="pull-left ">
+        <a href="/">id4ho</a>
+      </li>
+
+      
+      
+      <li class="pull-right ">
+        <a href="/about/">about</a>
+      </li>
+      
+      
+      <li class="pull-right ">
+        <a href="/categories/">categories</a>
+      </li>
+      
+      
+      <li class="pull-right ">
+        <a href="/tags/">tags</a>
+      </li>
+      
+    </ul>
+  </nav>
+</header>
+
+  </head>
+
+  <body>
+    <br/>
+
+
+<div class="content">
+  <div class="article-meta">
+  <h2><span class="title">CBC Bitflipping Attack</span></h2>
+  
+    <h3 class="date">[October 22, 2018]</h3>
+  
+  <p class="terms">
+    
+    
+    Categories: <a href="/categories/programming">programming</a> <a href="/categories/cryptography">cryptography</a> <a href="/categories/security">security</a> 
+    
+    
+    
+    Tags: <a href="/tags/cbc">cbc</a> <a href="/tags/aes">aes</a> <a href="/tags/cryptopals">cryptopals</a> 
+    
+    
+  </p>
+  </div>
+
+  
+
+  <main>
+    
+
+<p>I recently worked through an exercise of attacking an AES CBC oracle using a
+bitflipping attack. This exercise came at the end of
+<a href="cryptopals.com">cryptopals</a> set 2 and I was pretty surprised at how simple/easy
+it was. Up until this challenge I&rsquo;d been breaking AES in ECB mode. Most people
+are familiar with how unsafe ECB is<sup class="footnote-ref" id="fnref:1"><a href="#fn:1">1</a></sup> but, I was under the impression that
+barring a poor implementation, CBC was decent..</p>
+
+<h3 id="the-set-up">The set up</h3>
+
+<p>This bit flipping attack relies on an oracle. Pretend you have access to a
+website that is encrypting some data (including a field that you have control
+over) and then using that blob as a session. When it decrypts the blob it trusts
+the decrypted content.</p>
+
+<p>Let&rsquo;s also pretend you want to set your id to 1.. i.e. &ldquo;&amp;id=1&rdquo;. But,
+unfortunately, they are escaping the &lsquo;&amp;&rsquo; and &lsquo;=&rsquo; in the field you control prior
+to encryption (if they weren&rsquo;t..this would be a shorter blogpost 😆).</p>
+
+<h3 id="cbc-decryption">CBC decryption</h3>
+
+<p><img src="/images/cbc_decryption.png" alt="cbc decryption" /></p>
+
+<p>The way that CBC decrypts a ciphertext block involves xoring the block post AES
+decryption with the previous block of ciphertext. The key point here is that the
+xor&rsquo;ing happens <em>AFTER</em> you run the AES decryption algo. This fact alone (and
+control over some input and the ciphertext being decrypted) is enough to allow
+one to own AES CBC. How?</p>
+
+<h3 id="the-attack">The Attack</h3>
+
+<p>We are going to be manipulating 2 ciphertext blocks in order to inject &ldquo;&amp;id=1&rdquo;
+into the plaintext. The first ciphertext block will be edited and will wind
+up being scrambled when it&rsquo;s decrypted. The second block we send up won&rsquo;t
+contain any edits but the plaintext (for that second block only) will wind up
+being xor&rsquo;d by the difference between the legitimate first block and the
+edited first block (i.e. the block send down from the server and the one we send
+back up). The upshot of this is that any bit we flip in that first ciphertext
+block will also be flipped in the <em>PLAINTEXT</em> of the second block.</p>
+
+<h4 id="payload">Payload</h4>
+
+<p>Let&rsquo;s start with our input as &ldquo;thisgets jumbled\x00id\x001&rdquo;. Why did we write it
+like this?</p>
+
+<p>Well, assuming our input starts at a block demarcation (no guarantee there, but
+we can easily adjust later) the first part &ldquo;thisgets jumbled&rdquo; is 16 bytes, or
+the size of one block. When we send this up to the server and get back our
+ciphertext, we will be adjusting whatever this block encrypts to.</p>
+
+<p>The second part &ldquo;\x00id\x001&rdquo; is close to what we want to appear in the
+plaintext, but with literal null bytes (\x00) replacing the &lsquo;&amp;&rsquo; and &lsquo;=&rsquo;. I chose
+null bytes because it makes the xor bit really simple (any byte xor&rsquo;d with the
+null byte is itself, i.e. the null byte is the identity byte for xor).</p>
+
+<h4 id="bitflipping">Bitflipping</h4>
+
+<p>After getting our encrypted block back from the server we will manipulate one of
+the blocks:</p>
+
+<pre><code>let bitflips = &quot;&amp;\x00\x00=\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00&quot;.as_bytes().to_vec();
+let bitflipped_ct_block = xor_bytes(first_block, bitflips);
+</code></pre>
+
+<p>Most of the bytes are zero since we don&rsquo;t want to change most of that second
+block: we only want to coerce the first byte into an &lsquo;&amp;&rsquo; and the 4th byte into
+an &lsquo;=&rsquo;.</p>
+
+<p>When we concat the &lsquo;bitflipped_ct_block&rsquo; and the second block and send them back
+up to the server, it will decrypt them and xor the decrypted second block with
+our &lsquo;bitflipped_ct_block&rsquo;.</p>
+
+<p>To make this a bit more concrete: when CBC mode encrypts a block, it xor&rsquo;s the
+plaintext with the previous ciphertext block and then AES encrypts.</p>
+
+<p><img src="/images/cbc_encryption.png" alt="cbc encryption" /></p>
+
+<p>After running the AES decryption algorithm on a block you have a resulting block
+that is equivalent to:</p>
+
+<pre><code>plaintext_blk2 xor
+ciphertext_blk1
+</code></pre>
+
+<p>Then CBC will then take that resulting block and xor ciphertext_blk1 to get
+plaintext_blk2 (since the two ciphertext_blk1&rsquo;s cancel out).<sup class="footnote-ref" id="fnref:2"><a href="#fn:2">2</a></sup> Recall that we
+didn&rsquo;t manipulate that second block of ciphertext so after it goes through
+AES decryption it is equivalent to the above. However, we have manipulated bits
+in the ciphertext_blk1 that we sent back up, so when CBC tries to xor it, it&rsquo;s
+actually equivalent to:</p>
+
+<pre><code>plaintext_blk2 xor
+ciphertext_blk1 xor
+(ciphertext_blk1 xor our_bitflips)
+</code></pre>
+
+<p>The two ciphertext_blk1&rsquo;s cancel each other out (property of xor) and the server
+winds up with an adjusted plaintext that has been xor&rsquo;d with our bitflips,
+making our new session include the data &lsquo;&amp;id=1&rsquo;.</p>
+<div class="footnotes">
+
+<hr />
+
+<ol>
+<li id="fn:1"><a href="https://blog.filippo.io/the-ecb-penguin/">https://blog.filippo.io/the-ecb-penguin/</a>
+ <a class="footnote-return" href="#fnref:1">↩</a></li>
+<li id="fn:2">See the decryption diagram above if this is unclear
+ <a class="footnote-return" href="#fnref:2">↩</a></li>
+</ol>
+</div>
+
+  </main>
+</div>
+
+    <footer>
+      
+<script>
+(function() {
+  function center_el(tagName) {
+    var tags = document.getElementsByTagName(tagName), i, tag;
+    for (i = 0; i < tags.length; i++) {
+      tag = tags[i];
+      var parent = tag.parentElement;
+      
+      if (parent.childNodes.length === 1) {
+        
+        if (parent.nodeName === 'A') {
+          parent = parent.parentElement;
+          if (parent.childNodes.length != 1) continue;
+        }
+        if (parent.nodeName === 'P') parent.style.textAlign = 'center';
+      }
+    }
+  }
+  var tagNames = ['img', 'embed', 'object'];
+  for (var i = 0; i < tagNames.length; i++) {
+    center_el(tagNames[i]);
+  }
+})();
+</script>
+
+      
+      <hr/>
+      <a href="https://github.com/id4ho">Github</a>
+      
+    </footer>
+  </body>
+</html>
+

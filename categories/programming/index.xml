@@ -12,6 +12,15 @@
     
     
     <item>
+      <title>CBC Bitflipping Attack</title>
+      <link>/posts/2018-11-01-cbc-bitflipping/</link>
+      <pubDate>Mon, 22 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/2018-11-01-cbc-bitflipping/</guid>
+      <description>I recently worked through an exercise of attacking an AES CBC oracle using a bitflipping attack. This exercise came at the end of cryptopals set 2 and I was pretty surprised at how simple/easy it was. Up until this challenge I&amp;rsquo;d been breaking AES in ECB mode. Most people are familiar with how unsafe ECB is1 but, I was under the impression that barring a poor implementation, CBC was decent.</description>
+    </item>
+    
+    <item>
       <title>Repeating key xor and Hamming distance</title>
       <link>/posts/2018-10-22-repeating-key-xor-hamming-distance/</link>
       <pubDate>Mon, 22 Oct 2018 00:00:00 +0000</pubDate>

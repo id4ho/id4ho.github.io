@@ -11,11 +11,29 @@
     
     
     <item>
+      <title>aes</title>
+      <link>/tags/aes/</link>
+      <pubDate>Mon, 22 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/aes/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>bouldering</title>
       <link>/tags/bouldering/</link>
       <pubDate>Wed, 04 Jul 2018 00:00:00 +0000</pubDate>
       
       <guid>/tags/bouldering/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>cbc</title>
+      <link>/tags/cbc/</link>
+      <pubDate>Mon, 22 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/cbc/</guid>
       <description></description>
     </item>
     
