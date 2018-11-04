@@ -6,10 +6,20 @@
     <description>Recent content in security on id4ho</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 22 Oct 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 03 Nov 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/security/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>CBC Padding Oracle</title>
+      <link>/posts/2018-11-03-cbc-padding-oracle/</link>
+      <pubDate>Sat, 03 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/2018-11-03-cbc-padding-oracle/</guid>
+      <description>In implementing the CBC padding oracle attack I found a couple gotchas that tripped me up. I&amp;rsquo;m going to expand on those here to help myself remember a couple quirks of this attack and maybe help others who may struggle with the concrete implementation.
+CBC padding oracle outline The attack itself is fairly easy to understand if you are familiar with the CBC block cipher and how padding works. The short summary is that, given a way to verify that that a given CBC ciphertext has valid padding you can decrypt a CBC ciphertext.</description>
+    </item>
     
     <item>
       <title>CBC Bitflipping Attack</title>
