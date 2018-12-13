@@ -123,9 +123,9 @@ hamming distance: 60
 of those two blocks:</p>
 
 <pre><code>xor key: &quot;MLYHziJ4X748S7mV2Uen2IZ1TYoGkx&quot;
-string1 xord with the key =&gt;
+string1 xor'd with the key =&gt;
 &quot;9$0;Z\u{0}9\u{14}9\u{17}RY=C\u{c}%F&lt;\u{6}NV,)Zt:\u{7}&amp;\u{2}\n&quot;
-string2 xord with the key =&gt;
+string2 xor'd with the key =&gt;
 &quot;%)+-Z\u{0}9\u{14}9\u{17}GP&lt;E\u{19}vP&lt;\u{11}N]/zT:&gt;\u{3}.\u{18}\u{10}&quot;
 distance of two xor'd blocks: 60
 </code></pre>
@@ -133,8 +133,8 @@ distance of two xor'd blocks: 60
 <p>Could be a coincidence.. let&rsquo;s try with a different random key:</p>
 
 <pre><code>xor key: &quot;Dx4TJaHyBnVvxK2JXoA3Bb0RdWDo0Y&quot;
-string1 xord with the key =&gt; &quot;0\u{10}]\'j\u{8};Y#N0\u{17}\u{16}?S9,\u{6}\&quot;\u{13}&amp;\u{7}C9D4,\u{e}Y+&quot;
-string2 xord with the key =&gt; &quot;,\u{1d}F1j\u{8};Y#N%\u{1e}\u{17}9Fj:\u{6}5\u{13}-\u{4}\u{10}7\n0(\u{6}C1&quot;
+string1 xor'd with the key =&gt; &quot;0\u{10}]\'j\u{8};Y#N0\u{17}\u{16}?S9,\u{6}\&quot;\u{13}&amp;\u{7}C9D4,\u{e}Y+&quot;
+string2 xor'd with the key =&gt; &quot;,\u{1d}F1j\u{8};Y#N%\u{1e}\u{17}9Fj:\u{6}5\u{13}-\u{4}\u{10}7\n0(\u{6}C1&quot;
 distance of two xor'd blocks: 60
 </code></pre>
 
@@ -149,27 +149,27 @@ plaintext strings.</p>
 actually looking at the edit distance between two plaintext blocks(!!).</p>
 
 <p>Now let&rsquo;s see what happens when we compute the edit distances using the
-incorrect keylength. The hypothesis here is that the edit distance will be is
+incorrect keylength. The hypothesis here is that the edit distance will be
 larger.</p>
 
 <pre><code>plaintext: &quot;welcome to the zoo&quot;
 xor_key (length 9): &quot;·hÀ\&quot;®¹ùÒ)&quot;
-xord together =&gt; &quot;À\r¬AÁÔ\u{9c}ò]ØH´JË\u{99}\u{83}½F&quot;
+xor'd together =&gt; &quot;À\r¬AÁÔ\u{9c}ò]ØH´JË\u{99}\u{83}½F&quot;
 </code></pre>
 
 <p>We&rsquo;ve xor&rsquo;d the plaintext with a repeating key of length 9. If we assume a
 keylength of 6:</p>
 
-<pre><code>the first xord block looks like: &quot;À\r¬AÁÔ&quot;
-the second xord block looks like: &quot;\u{9c}ò]ØH´&quot;
+<pre><code>the first xor'd block looks like: &quot;À\r¬AÁÔ&quot;
+the second xor'd block looks like: &quot;\u{9c}ò]ØH´&quot;
 the hamming distance: 26
 the normalized hamming distance for block length 6 is: 4.3333335
 </code></pre>
 
 <p>Now let&rsquo;s try with a blocksize of 9 (the correct length)</p>
 
-<pre><code>the first xord block looks like: &quot;À\r¬AÁÔ\u{9c}ò]&quot;
-the second xord block looks like: &quot;ØH´JË\u{99}\u{83}½F&quot;
+<pre><code>the first xor'd block looks like: &quot;À\r¬AÁÔ\u{9c}ò]&quot;
+the second xor'd block looks like: &quot;ØH´JË\u{99}\u{83}½F&quot;
 the hamming distance: 30
 the normalized hamming distance for block length 9 is: 3.3333333
 </code></pre>
@@ -184,13 +184,13 @@ the incorrect sized block is randomly small for a given key (more likely if that
 key is only ascii charcters). Therefore to effectively utlized this technique
 it&rsquo;s best to look at several blocks and not just the first two. When I solved
 this problem I averaged the normalized distances of every pair of blocks in the
-first 4.</p>
+first 4 (1&amp;2,2&amp;3,3&amp;4,1&amp;3,2&amp;4,1&amp;4).</p>
 
 <p>An important thing to note about why this technique works is that the edit
 distance between a string of english and another string of english will
 generally (hence the averaging of multiple blocks) be smaller than the edit
-distance between two strings of random bytes which is what you get when you pick
-the wrong block size.</p>
+distance between two strings of random bytes which is essentailly what you are
+calculating when you pick the wrong block size.</p>
 <div class="footnotes">
 
 <hr />
