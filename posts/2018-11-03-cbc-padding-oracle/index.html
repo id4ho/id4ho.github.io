@@ -80,14 +80,12 @@ concrete implementation.</p>
 
 <p>The attack itself is fairly easy to understand if you are familiar with the CBC
 block cipher and how padding works. The short summary is that, given a way to
-verify that that a given CBC ciphertext has valid padding you can decrypt a CBC
-ciphertext. In order to recover all of the plaintext you also need to be able to
-provide the IV used. But if this isn&rsquo;t possible, you can still decrypt all but
-the first block.</p>
+verify that that a given CBC ciphertext has valid padding (i.e. an oracle) you
+can decrypt any given CBC ciphertext.<sup class="footnote-ref" id="fnref:1"><a href="#fn:1">1</a></sup></p>
 
 <p>The attack works like this.. Let&rsquo;s say you want to decrypt the last block. You
-xor the last bit of the second to last block with a byte and submit it to the
-padding oracle. You continue to enumerate through all possible u8s until the
+xor the last byte of the second to last block with a byte and submit it to the
+padding oracle. You continue to enumerate through all possible bytes until the
 padding oracle confirms that the ciphertext has valid padding. At this point you
 know (with decent certainty) that the last byte of the last block you submitted,
 decrypted to 0x01. You can use this information to recover that byte of
@@ -102,7 +100,7 @@ plaintext. Using this scheme you can recover the entire message.</p>
 <h3 id="the-u8-enumeration-snag">The u8 enumeration snag</h3>
 
 <p>When I started to enumerate all u8&rsquo;s to find the byte that would coerce the CT
-into having valid 0x01 padding I used the range <code>0u8..=255</code> in Rust.<sup class="footnote-ref" id="fnref:1"><a href="#fn:1">1</a></sup></p>
+into having valid 0x01 padding I used the range <code>0u8..=255</code> in Rust.<sup class="footnote-ref" id="fnref:2"><a href="#fn:2">2</a></sup></p>
 
 <p>The problem here is 0u8 (which is simply shorthand for <code>0 as u8</code>). Why is
 zero no good here? Well it doesn&rsquo;t change the ciphertext at all (anything xored
@@ -163,8 +161,10 @@ valid padding.</p>
 <hr />
 
 <ol>
-<li id="fn:1">If you use 0u8..256 in Rust you&rsquo;ll get a compiler warning <code>warning: literal out of range for u8</code>
+<li id="fn:1">In order to recover all of the plaintext you also need to be able to provide the IV used. But if this isn&rsquo;t possible, you can still decrypt all but the first block.
  <a class="footnote-return" href="#fnref:1">↩</a></li>
+<li id="fn:2">If you use 0u8..256 in Rust you&rsquo;ll get a compiler warning <code>warning: literal out of range for u8</code>
+ <a class="footnote-return" href="#fnref:2">↩</a></li>
 </ol>
 </div>
 

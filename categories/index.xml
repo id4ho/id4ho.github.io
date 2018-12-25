@@ -40,9 +40,18 @@
     <item>
       <title>security</title>
       <link>/categories/security/</link>
-      <pubDate>Sat, 03 Nov 2018 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 25 Dec 2018 00:00:00 +0000</pubDate>
       
       <guid>/categories/security/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>web-hacking</title>
+      <link>/categories/web-hacking/</link>
+      <pubDate>Tue, 25 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/web-hacking/</guid>
       <description></description>
     </item>
     

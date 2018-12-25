@@ -6,10 +6,21 @@
     <description>Recent content in security on id4ho</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 03 Nov 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 25 Dec 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/categories/security/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Setting Up Bee-Box VM</title>
+      <link>/posts/2018-12-25-setting-up-beeboxvm/</link>
+      <pubDate>Tue, 25 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/2018-12-25-setting-up-beeboxvm/</guid>
+      <description>I ran into a couple hiccups trying to talk to the bee-box VM and figured I&amp;rsquo;d blog about how I worked through it/found a solution in case others have similar problems.
+First off, bee-box is a custom Linux VM pre-installed with bWAPP. The (bWAPP)[http://www.itsecgames.com/] is an extremely buggy web application, with many different security problems that are discoverable/exploitable for practice.
+In general, since you are intending to &amp;ldquo;attack&amp;rdquo; the bWAPP, it&amp;rsquo;s ideal that it&amp;rsquo;s on a machine other than your host machine.</description>
+    </item>
     
     <item>
       <title>CBC Padding Oracle</title>
@@ -18,7 +29,7 @@
       
       <guid>/posts/2018-11-03-cbc-padding-oracle/</guid>
       <description>In implementing the CBC padding oracle attack I found a couple gotchas that tripped me up. I&amp;rsquo;m going to expand on those here to help myself remember a couple quirks of this attack and maybe help others who may struggle with the concrete implementation.
-CBC padding oracle outline The attack itself is fairly easy to understand if you are familiar with the CBC block cipher and how padding works. The short summary is that, given a way to verify that that a given CBC ciphertext has valid padding you can decrypt a CBC ciphertext.</description>
+CBC padding oracle outline The attack itself is fairly easy to understand if you are familiar with the CBC block cipher and how padding works. The short summary is that, given a way to verify that that a given CBC ciphertext has valid padding (i.</description>
     </item>
     
     <item>

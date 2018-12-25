@@ -18,7 +18,7 @@
       
       <guid>/posts/2018-11-03-cbc-padding-oracle/</guid>
       <description>In implementing the CBC padding oracle attack I found a couple gotchas that tripped me up. I&amp;rsquo;m going to expand on those here to help myself remember a couple quirks of this attack and maybe help others who may struggle with the concrete implementation.
-CBC padding oracle outline The attack itself is fairly easy to understand if you are familiar with the CBC block cipher and how padding works. The short summary is that, given a way to verify that that a given CBC ciphertext has valid padding you can decrypt a CBC ciphertext.</description>
+CBC padding oracle outline The attack itself is fairly easy to understand if you are familiar with the CBC block cipher and how padding works. The short summary is that, given a way to verify that that a given CBC ciphertext has valid padding (i.</description>
     </item>
     
     <item>
