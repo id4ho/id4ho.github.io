@@ -33,11 +33,6 @@
   </url>
   
   <url>
-    <loc>/posts/2018-07-04-on-climbing-and-failure/</loc>
-    <lastmod>2018-07-04T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>/posts/2018-06-17-week-2/</loc>
     <lastmod>2018-06-17T00:00:00+00:00</lastmod>
   </url>
@@ -89,20 +84,8 @@
   </url>
   
   <url>
-    <loc>/tags/bouldering/</loc>
-    <lastmod>2018-07-04T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
     <loc>/tags/cbc/</loc>
     <lastmod>2018-11-03T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/categories/climbing/</loc>
-    <lastmod>2018-07-04T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -121,12 +104,6 @@
   <url>
     <loc>/tags/encoding/</loc>
     <lastmod>2018-07-07T00:00:00+00:00</lastmod>
-    <priority>0</priority>
-  </url>
-  
-  <url>
-    <loc>/tags/failure/</loc>
-    <lastmod>2018-07-04T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
