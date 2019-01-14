@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SHA1 length extension attack | id4ho</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/fonts.css" />
+    <link rel="stylesheet" href="/css/theme-override.css">
+    <header>
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <nav>
+    <ul>
+      
+      
+      <li class="pull-left ">
+        <a href="/">id4ho</a>
+      </li>
+
+      
+      
+      <li class="pull-right ">
+        <a href="/about/">about</a>
+      </li>
+      
+      
+      <li class="pull-right ">
+        <a href="/categories/">categories</a>
+      </li>
+      
+      
+      <li class="pull-right ">
+        <a href="/tags/">tags</a>
+      </li>
+      
+    </ul>
+  </nav>
+</header>
+
+  </head>
+
+  <body>
+    <br/>
+
+
+<div class="content">
+  <div class="article-meta">
+  <h2><span class="title">SHA1 length extension attack</span></h2>
+  
+    <h3 class="date">[January 11, 2019]</h3>
+  
+  <p class="terms">
+    
+    
+    Categories: <a href="/categories/programming">programming</a> <a href="/categories/cryptography">cryptography</a> <a href="/categories/security">security</a> 
+    
+    
+    
+    Tags: <a href="/tags/sha1">sha1</a> <a href="/tags/macs">macs</a> <a href="/tags/cryptopals">cryptopals</a> 
+    
+    
+  </p>
+  </div>
+
+  
+
+  <main>
+    
+
+<p>In computer security, a message authentication code is a code that intends to
+prove that a message came from a specific party. It does not encrypt the
+contents of the message or hide them in any way, but serves to verify that the
+message is untampered with and came from the source it is purporting to come
+from.</p>
+
+<h4 id="how-does-this-work">How does this work?</h4>
+
+<p>Typically, it involves using some form of hashing function with the message and
+a secret as input. Hashing functions are one-way compression functions that
+take input of any length and return an output that is always the same length.
+The output is guaranteed to be different for each input.<sup class="footnote-ref" id="fnref:1"><a href="#fn:1">1</a></sup></p>
+
+<p>hashing function finding a collision (two inputs with the same output) is
+  computationally infeasible and would take years if not decades of compute time</p>
+
+<p>Let&rsquo;s say Bob and Alice have access to a shared-secret. Bob needs Alice to
+execute a bank transaction for him. He writes a message detailing the
+transaction but he knows he is sending it over a potentially compromised
+network. To be sure that the message is verifiably authentic, Bob will generate
+a message authentication code, or a signature, to send along with the message to
+Alice. In this example Bob will use the hashing function SHA1 as the MAC
+generator:</p>
+
+<pre><code>SHARED_SECRET = &quot;supersecretpassword&quot;
+message = &quot;transfer $50 to Mallory; transfer $25 to Cathy;&quot;
+mac = Digest::SHA1.hexdigest &quot;#{SHARED_SECRET}#{message}&quot;
+=&gt; &quot;b5f9136e32ce6101e77633fc1a68c442d3455e06&quot;
+send_to_alice = &quot;#{message}-#{mac}&quot;
+=&gt; &quot;transfer $50 to Mallory; transfer $25 to Cathy;-b5f9136e32ce6101e77633fc1a68c442d3455e06&quot;
+</code></pre>
+
+<p>These are public transactions so we don&rsquo;t care who sees them, but we can&rsquo;t have
+them tampered with on the wire. What if Mallory had compromised the network,
+intercepted the message to Alice and changed the message to <code>transfer $5000
+Mallory</code>? Well, let&rsquo;s check out what happens when Alice receives this forged
+message:</p>
+
+<pre><code>SHARED_SECRET = &quot;supersecretpassword&quot;
+received_msg = &quot;transfer $5000 to Mallory; transfer $25 to Cathy;-b5f9136e32ce6101e77633fc1a68c442d3455e06&quot;
+transactions, wire_mac = received_msg.split(&quot;-&quot;)
+=&gt; [&quot;transfer $5000 to Mallory; transfer $25 to Cathy;&quot;, &quot;b5f9136e32ce6101e77633fc1a68c442d3455e06&quot;]
+transactions_mac = Digest::SHA1.hexdigest &quot;#{SHARED_SECRET}#{transactions}&quot;
+=&gt; &quot;7445d58c4443296b3268840c210b35beb8aaa323&quot;
+transactions_mac == wire_mac
+=&gt; false
+</code></pre>
+
+<p>This message is NOT authentic!<sup class="footnote-ref" id="fnref:2"><a href="#fn:2">2</a></sup> So the transfers will not go through. If Mallory
+had NOT intercepted the message and altered it Alice would receive the intended
+message:</p>
+
+<pre><code>received_msg = &quot;transfer $50 to Mallory; transfer $25 to Cathy;-b5f9136e32ce6101e77633fc1a68c442d3455e06&quot;
+transactions, wire_mac = received_msg.split(&quot;-&quot;)
+=&gt; [&quot;transfer $50 to Mallory; transfer $25 to Cathy;&quot;, &quot;b5f9136e32ce6101e77633fc1a68c442d3455e06&quot;]
+transactions_mac = Digest::SHA1.hexdigest &quot;#{SHARED_SECRET}#{transactions}&quot;
+=&gt; &quot;b5f9136e32ce6101e77633fc1a68c442d3455e06&quot;
+transactions_mac == wire_mac
+=&gt; true
+</code></pre>
+
+<h3 id="another-use-case-signing-cookies">Another use case - signing cookies</h3>
+
+<p>Cookies are a work-around to maintaining sessions (authentication) online since
+HTTP is a stateless protocol. After login, a web application will typically send
+down a header to your browser that looks like this:<sup class="footnote-ref" id="fnref:3"><a href="#fn:3">3</a></sup></p>
+
+<pre><code>Set-Cookie: user_id=1337;user_name=id4ho;
+</code></pre>
+
+<p>You browser will then send this cookie back to the server any time you request a
+page from the same web application. However, these cookies are editable by the
+user using proxies or browsers&rsquo; developer tooling. So how does the application
+know that the user didn&rsquo;t edit their cookie before sending it back?<sup class="footnote-ref" id="fnref:4"><a href="#fn:4">4</a></sup> One way
+is to sign the cookie with a MAC:</p>
+
+<pre><code>SECRET = &quot;supersecretpassword&quot;
+
+...
+
+user_id = 1337
+user_name = id4ho
+cookie_data = &quot;user_id=#{user_id};user_name=#{user_name};&quot;
+mac = sha1(&quot;#{SECRET}#{cookie_data}&quot;)
+cookie = &quot;#{cookie_data}-#{mac};
+</code></pre>
+
+<p>Now, when the cookie is sent back up, the web application will recompute the mac
+(like Alice did above) and verify that it matches <strong>before</strong> trusting the
+information in the cookie.</p>
+
+<h3 id="hacking-the-cookie">Hacking the cookie</h3>
+
+<p>What if there was a way to forge a legitimate cookie (i.e. valid signature)
+without knowing the password? If you are familiar with cryptographic hashing
+functions, but never implemented one you may reasonably think that this can&rsquo;t be
+done. Since it&rsquo;s categorically infeasible to reverse a hashing function. But,
+this post would be pretty short if you were right.</p>
+
+<h3 id="sha1-length-extension-attack">SHA1 length extension attack</h3>
+
+<p>It&rsquo;s generally not a good idea to just use a cryptographic hashing function to
+generate your MACs since many are susceptible to length extension attacks.<sup class="footnote-ref" id="fnref:3"><a href="#fn:3">3</a></sup> This
+means that an attacker can modify the orignial message and add their own data
+<em>AND</em> generate a new valid hash <strong>without knowing the secret</strong>. This sounds
+insane until you look at the internals of MD-based hashing functions like
+SHA1.<sup class="footnote-ref" id="fnref:4"><a href="#fn:4">4</a></sup></p>
+
+<h4 id="how-do-the-internals-of-the-hashing-algorithm-work">How do the internals of the hashing algorithm work?</h4>
+
+<p>We&rsquo;re only going to get as detailed as absolutely necessary to explain this
+vulnerability. Internally, SHA1 has 5 state variables of 32 bits each (also
+called registers). They are initialized to the magic values below:</p>
+
+<pre><code>h0 = 0x67452301
+h1 = 0xEFCDAB89
+h2 = 0x98BADCFE
+h3 = 0x10325476
+h4 = 0xC3D2E1F0
+</code></pre>
+
+<p>SHA1 can take any length message and return a fixed-length message digest of 20
+bytes (or 160 bits). The input data is broken into blocks, and each block is
+processed through a round of compression functions that deterministically alter
+the five 32-bit registers. Once there is no more input, the last block is padded
+(see below) to 512 bits and one more round of compression occurs before
+returning the registers as a 20 byte digest.</p>
+
+<p>What is important to realize is that given a SHA1 digest, we can determine the
+internal state of h0-h4 that resulted in that given digest.</p>
+
+<p>If you think about this a bit harder you may realize that if we wanted to add
+another 512 bits to the message that resulted in a given hash, we could do so
+without knowing anything about the prior message other than its length. All we
+need to be able to do is back into the state of h0-h4 and run additional rounds
+of the SHA1 compression functions for the extra bits we&rsquo;d like to append.</p>
+
+<h3 id="sha1-collision-prevention-properties">SHA1 collision prevention properties</h3>
+
+<p>There are couple tricky aspects to getting this length-extension hack right
+since SHA1 has a couple properties that prevent it from having trivial
+collisions. These properties are:</p>
+
+<ol>
+<li>appending a single 1 bit to the end of the message and</li>
+<li>appending the length of the message in bits at the end of the 512 bit block.</li>
+</ol>
+
+<p>The length is represented as 8 bytes big-endian and appended to the very end of
+the last block processed so the message plus the appended 1 bit is then padded
+with zeros up to 56 bytes (64 bytes - 8 bytes). Either of these properties alone
+would prevent collisions, but both are performed as a sort of belt &amp; suspenders
+approach.</p>
+
+<p>Without these features, one could submit the binary message 1010101 and the
+binary message 10101010 and they would both hash to the same value since the
+input would need to be padded with 0&rsquo;s up to the 512 bit blocksize.</p>
+
+<h3 id="length-extension-in-practice">Length extension in practice</h3>
+
+<p>The goal is to take a signed-cookie like
+<code>user_id=1337;user_name=id4ho;-6a0c17cd9913a45e064a4b431008521f9680c019</code> and
+change the message part to <code>user_id=1337;user_name=id4ho;user_id=1;</code> (if the
+second attr overrides the first in the application logic you are now the
+(likely) root user of the application) or
+<code>user_id=1337;user_name=id4ho;admin=true;</code>.</p>
+
+<p>To generate a valid signature for those messages we need to take the original
+SHA1 digest of <code>user_id=1337;user_name=id4ho;</code> (which was hashed as <code>secret ||
+message</code>) and use it to set the internal state of the SHA1 function.</p>
+
+<pre><code>secret = &quot;supersecretpassword&quot;
+cookie_data = &quot;user_id=1337;user_name=id4ho;&quot;
+msg_data = secret + cookie_data
+Digest::SHA1.hexdigest(msg_data)
+=&gt; &quot;6a0c17cd9913a45e064a4b431008521f9680c019&quot;
+</code></pre>
+
+<p>So to execute this hack all we have is the MAC
+(<code>&quot;6a0c17cd9913a45e064a4b431008521f9680c019&quot;</code>) and the knowledge that some
+secret was prepended to the cookie data <code>&quot;user_id=1337;user_name=id4ho;&quot;</code>.<sup class="footnote-ref" id="fnref:5"><a href="#fn:5">5</a></sup></p>
+
+<p>Now we need to figure out what we want our cookie data to be, and then create a
+forged mac that &ldquo;signs&rdquo; that falsified cookie data.<sup class="footnote-ref" id="fnref:6"><a href="#fn:6">6</a></sup></p>
+
+<pre><code>let legit_mac = &quot;6a0c17cd9913a45e064a4b431008521f9680c019&quot;.to_string();
+let desired_append_bytes = &quot;;admin=true;&quot;.as_bytes();
+let sha1_state = sha1_state_from_digest_string(&amp;legit_mac);
+let length = 64; // this is in bytes, after padding
+let mut sha1 = sha1::Sha1::new_with_state_and_len(sha1_state, length);
+
+// update will run another hashing iteration with the `;admin=true;` string
+sha1.update(&amp;desired_append_bytes);
+println!(&quot;the new forged mac: {:?}&quot;, sha1.hexdigest());
+=&gt; the new forged mac: &quot;c82b4069f79dc2c1bbc3a8074d8a35ef686491c4&quot;
+</code></pre>
+
+<p>All I&rsquo;ve done here is set up a Sha1 struct with the state implied by the
+original mac (rememeber this is sent along with the message/cookie). Then I&rsquo;ve
+updated that struct with some additional bytes (our exploit string
+&ldquo;;admin=true;&rdquo;). This hex digest generated should be a valid MAC with our <code>;admin=true;</code>
+string added in! If we send back up the updated message and mac we can see if
+the browser accepts our cookie:</p>
+
+<pre><code># our new cookie:
+original_cookie = &quot;user_id=1337;user_name=id4ho;&quot;
+updated_cookie = original_cookie + &quot;;admin=true;&quot;
+forged_mac = &quot;c82b4069f79dc2c1bbc3a8074d8a35ef686491c4&quot;
+cookie = &quot;#{updated_cookie}-#{forged_mac}&quot;
+=&gt; &quot;user_id=1337;user_name=id4ho;;admin=true;-c82b4069f79dc2c1bbc3a8074d8a35ef686491c4&quot;
+
+...
+
+# on the server
+
+def valid_cookie?(cookie)
+  cookie_data, mac = cookie.split(&quot;-&quot;)
+  Digest::SHA1.hexdigest &quot;#{SECRET}#{cookie_data}&quot; == mac
+end
+
+valid_cookie?(&quot;user_id=1337;user_name=id4ho;;admin=true;-c82b4069f79dc2c1bbc3a8074d8a35ef686491c4&quot;)
+=&gt; false
+</code></pre>
+
+<p>Hmmm&hellip;. Let&rsquo;s quickly use the password again to verify that this new
+message/mac is actually wrong:</p>
+
+<pre><code>msg_data = &quot;supersecretpassworduser_id=1337;user_name=id4ho;;admin=true;&quot;
+=&gt; &quot;supersecretpassworduser_id=1337;user_name=id4ho;;admin=true;&quot;
+Digest::SHA1.hexdigest(msg_data)
+=&gt; &quot;87b02aac5706c52c8116154e302aecd96c88cd6c&quot;
+</code></pre>
+
+<p>You may have noticed that odd looking double semi-colon above. That probably
+wouldn&rsquo;t matter for most parsers but it&rsquo;s there for a reason. We need to account
+for the fact that the state of the SHA1 registers we are backing into are the
+result of the original message <strong>plus</strong> the padding and the anti-collision
+features described above. All we have to do is update our message to take this
+into account.</p>
+
+<p>Unfortunately, we don&rsquo;t know the length of the secret (in a real world example),
+but we can guess. Let&rsquo;s assume it&rsquo;s a 19 byte secret (or 152 bits) ;).<sup class="footnote-ref" id="fnref:7"><a href="#fn:7">7</a></sup> So we
+don&rsquo;t know what it is but we&rsquo;ll put a placeholder there for it:</p>
+
+<pre><code>secret_length_guess = 19
+=&gt; 19
+original_msg = &quot;user_id=1337;user_name=id4ho;&quot;.scan(/./).map {|c| &quot;%02x&quot; % c.ord} 
+=&gt; [&quot;75&quot;, &quot;73&quot;, &quot;65&quot;, &quot;72&quot;, &quot;5f&quot;, &quot;69&quot;, &quot;64&quot;, &quot;3d&quot;, &quot;31&quot;, &quot;33&quot;, &quot;33&quot;, &quot;37&quot;, &quot;3b&quot;, &quot;75&quot;, &quot;73&quot;, &quot;65&quot;, &quot;72&quot;, &quot;5f&quot;, &quot;6e&quot;, &quot;61&quot;, &quot;6d&quot;, &quot;65&quot;, &quot;3d&quot;, &quot;69&quot;, &quot;64&quot;, &quot;34&quot;, &quot;68&quot;, &quot;6f&quot;, &quot;3b&quot;]
+padding_bit = [&quot;%02x&quot; % 0x80] // 10000000 in binary
+=&gt; [&quot;80&quot;]
+length_in_bits = (secret_length_guess + original_msg.length) * 8
+=&gt; 384
+length_bytes = (&quot;%064b&quot; % length_in_bits).chars.each_slice(8).to_a.map { |byte| &quot;%02x&quot; % byte.join(&quot;&quot;).to_i(2) }
+=&gt; [&quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;01&quot;, &quot;80&quot;]
+original_512_block = [&quot;%02x&quot; % 0] * 64
+=&gt; [&quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;]
+original_512_block[secret_length_guess, original_msg.length] = original_msg
+=&gt; [&quot;75&quot;, &quot;73&quot;, &quot;65&quot;, &quot;72&quot;, &quot;5f&quot;, &quot;69&quot;, &quot;64&quot;, &quot;3d&quot;, &quot;31&quot;, &quot;33&quot;, &quot;33&quot;, &quot;37&quot;, &quot;3b&quot;, &quot;75&quot;, &quot;73&quot;, &quot;65&quot;, &quot;72&quot;, &quot;5f&quot;, &quot;6e&quot;, &quot;61&quot;, &quot;6d&quot;, &quot;65&quot;, &quot;3d&quot;, &quot;69&quot;, &quot;64&quot;, &quot;34&quot;, &quot;68&quot;, &quot;6f&quot;, &quot;3b&quot;]
+original_512_block[secret_length_guess + original_msg.length, 1] = padding_bit
+=&gt; [&quot;80&quot;]
+original_512_block[56, 8] = length_bytes
+=&gt; [&quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;00&quot;, &quot;01&quot;, &quot;80&quot;]
+original_512_block.map {|h| h.to_i(16).chr }.join(&quot;&quot;)
+=&gt; &quot;\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00user_id=1337;user_name=id4ho;\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01h&quot;
+</code></pre>
+
+<p>Let&rsquo;s break down the <code>original_512_block</code> above. The first 48 bytes are just
+ascii encoded hex representing the secret (which is just a placeholder of
+all null bytes) and the message. The 0x80 is 10000000 in binary, or the 1 bit
+anti-collision feature. The last 8 bytes is the big endian representation of the
+length of the original message in bits.</p>
+
+<p>In order to trigger an additional round of hashing with our malicious input
+(<code>;admin=true;</code>) we need to first modify the content of the message to include
+all of the padding and length bits. Then when our extra input updates the hash
+function it starts at a fresh block. In order to do this we&rsquo;ll have to modify
+the cookie to say our username is
+<code>&quot;id4ho;\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01h&quot;</code>. Then if
+we add our malicious input immedately after it will begin at exactly the
+demarcation of a block (i.e. modulo 64 bytes) and be processed by the SHA1
+compression functions on top of the valid state of messing with the state of the
+registers post secret hashing. This is a bit hard to follow but we can verify
+that it works:</p>
+
+<pre><code>hacked_cookie = &quot;user_id=1337;user_name=id4ho;\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x80;admin=true;&quot;
+Digest::SHA1.hexdigest &quot;supersecretpassword#{hacked_cookie}&quot;
+=&gt; &quot;c82b4069f79dc2c1bbc3a8074d8a35ef686491c4&quot; 
+</code></pre>
+
+<p>As you can see this digest matches the digest calculated above and is a valid
+signature for this data.<sup class="footnote-ref" id="fnref:8"><a href="#fn:8">8</a></sup></p>
+<div class="footnotes">
+
+<hr />
+
+<ol>
+<li id="fn:1">While not mathematically true, it is true in the sense that for a strong
+ <a class="footnote-return" href="#fnref:1">↩</a></li>
+<li id="fn:2">If the input to a hash function has a single bit flipped (i.e. changed in the smallest way possible), the resulting output will be completely different. Worth noting here that the signature cannot be changed along with the message because you must know the secret that was prepended to the message to compute a valid signature.
+ <a class="footnote-return" href="#fnref:2">↩</a></li>
+<li id="fn:3">The gold standard is the <a href="https://en.wikipedia.org/wiki/HMAC">HMAC function</a> designed for just this purpose. It is not susceptible to length extension attacks. However, normal hashing functions were used in the pass as MAC functions and are still used today. This attack was famously used to compromise the <a href="http://netifera.com/research/flickr_api_signature_forgery.pdf">Flickr API in 2009</a>.
+ <a class="footnote-return" href="#fnref:3">↩</a></li>
+<li id="fn:4">Merkle–Damgård hash functions are susceptible to length extension attacks. This construction was used in many hashing algorithms including MD5, SHA1 and SHA2.
+ <a class="footnote-return" href="#fnref:4">↩</a></li>
+<li id="fn:5">Ignore the fact that we know the password.. I needed to use the password to generate the MAC that would have been sent down to our browser, but it won&rsquo;t be used for the exploit (except to verify our result at the end)
+ <a class="footnote-return" href="#fnref:5">↩</a></li>
+<li id="fn:6">The previous code was in Ruby and the below is in Rust. Apologies for the switch. I wrote the exploit in Rust but find Ruby to be a lot easier to follow for those unfamiliar with the language. I&rsquo;ve also left out the functions I&rsquo;m calling here as they would just clutter the post, but the source is <a href="https://github.com/id4ho/crustopals/blob/master/src/crustopals/problem29.rs">here</a>
+ <a class="footnote-return" href="#fnref:6">↩</a></li>
+<li id="fn:7">We happen to know the secret length here so it&rsquo;s a bit contrived, but if we didn&rsquo;t we could guess and repeat this process for secrets anywhere between 8 bytes and 30 bytes to brute force the correct length. This number must be right because a change in secret length by 1 byte (8 bits) shifts every byte in this block and changes the length bytes at the end.
+ <a class="footnote-return" href="#fnref:7">↩</a></li>
+<li id="fn:8">In illustrating this hack I&rsquo;ve taken a few liberties, and one of those is that null bytes (0x00) are often treated in weird ways by applications. So depending on the order of parsing (may strip null bytes) vs validating the digest this may or may not be a valid attack vector.
+ <a class="footnote-return" href="#fnref:8">↩</a></li>
+</ol>
+</div>
+
+  </main>
+</div>
+
+    <footer>
+      
+<script>
+(function() {
+  function center_el(tagName) {
+    var tags = document.getElementsByTagName(tagName), i, tag;
+    for (i = 0; i < tags.length; i++) {
+      tag = tags[i];
+      var parent = tag.parentElement;
+      
+      if (parent.childNodes.length === 1) {
+        
+        if (parent.nodeName === 'A') {
+          parent = parent.parentElement;
+          if (parent.childNodes.length != 1) continue;
+        }
+        if (parent.nodeName === 'P') parent.style.textAlign = 'center';
+      }
+    }
+  }
+  var tagNames = ['img', 'embed', 'object'];
+  for (var i = 0; i < tagNames.length; i++) {
+    center_el(tagNames[i]);
+  }
+})();
+</script>
+
+      
+      <hr/>
+      <a href="https://github.com/id4ho">Github</a>
+      
+    </footer>
+  </body>
+</html>
+

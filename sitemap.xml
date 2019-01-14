@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>/posts/2019-01-11-mac-length-extension-attack/</loc>
+    <lastmod>2019-01-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/posts/2018-11-03-cbc-padding-oracle/</loc>
     <lastmod>2018-11-03T00:00:00+00:00</lastmod>
   </url>
@@ -63,13 +68,13 @@
   
   <url>
     <loc>/posts/</loc>
-    <lastmod>2018-11-03T00:00:00+00:00</lastmod>
+    <lastmod>2019-01-11T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/</loc>
-    <lastmod>2018-11-03T00:00:00+00:00</lastmod>
+    <lastmod>2019-01-11T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -91,13 +96,13 @@
   
   <url>
     <loc>/categories/cryptography/</loc>
-    <lastmod>2018-11-03T00:00:00+00:00</lastmod>
+    <lastmod>2019-01-11T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>/tags/cryptopals/</loc>
-    <lastmod>2018-11-03T00:00:00+00:00</lastmod>
+    <lastmod>2019-01-11T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -120,6 +125,12 @@
   </url>
   
   <url>
+    <loc>/tags/macs/</loc>
+    <lastmod>2019-01-11T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>/tags/nand2tetris/</loc>
     <lastmod>2018-07-17T00:00:00+00:00</lastmod>
     <priority>0</priority>
@@ -127,7 +138,7 @@
   
   <url>
     <loc>/categories/programming/</loc>
-    <lastmod>2018-11-03T00:00:00+00:00</lastmod>
+    <lastmod>2019-01-11T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -139,7 +150,13 @@
   
   <url>
     <loc>/categories/security/</loc>
-    <lastmod>2018-11-03T00:00:00+00:00</lastmod>
+    <lastmod>2019-01-11T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/sha1/</loc>
+    <lastmod>2019-01-11T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
