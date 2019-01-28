@@ -106,7 +106,7 @@ into the plaintext. The first ciphertext block will be edited and will wind
 up being scrambled when it&rsquo;s decrypted. The second block we send up won&rsquo;t
 contain any edits but the plaintext (for that second block only) will wind up
 being xor&rsquo;d by the difference between the legitimate first block and the
-edited first block (i.e. the block send down from the server and the one we send
+edited first block (i.e. the block sent down from the server and the one we send
 back up). The upshot of this is that any bit we flip in that first ciphertext
 block will also be flipped in the <em>PLAINTEXT</em> of the second block.</p>
 
