@@ -117,7 +117,7 @@ padding was 0x01 which is not true most of the time. This is problematic.</p>
 <p>After I stopped using 0 as a valid test byte I still had issues with my code.
 Now I couldn&rsquo;t ever &ldquo;recover&rdquo; the leftmost byte of padding.. Why?</p>
 
-<p>Well&hellip; if you have a last block of plaintext bytes that look like this:</p>
+<p>Well&hellip; if you have a last block of plaintext bytes that looks like this:</p>
 
 <pre><code>[104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 33, 33, 03, 03, 03]
 </code></pre>
@@ -128,7 +128,7 @@ like so:</p>
 <pre><code>[104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 33, 33, 03, 03, 01]
 </code></pre>
 
-<p>The the last two bytes to 02:</p>
+<p>Then you do the last two bytes to 02:</p>
 
 <pre><code>[104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 33, 33, 03, 02, 02]
 </code></pre>
